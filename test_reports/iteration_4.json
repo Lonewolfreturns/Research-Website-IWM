@@ -1,0 +1,47 @@
+{
+  "summary": "Iteration 4 validates the Team redesign + 7 social-link fields. Backend: 45/46 pytest pass; 1 REAL BUG found — PUT /api/admin/team/{id} with empty-string form field does NOT clear the social field (framework-level: FastAPI coerces empty-string Form value to None when field is Optional[str] with default=None, so the `if val is not None` branch is skipped and the DB value stays unchanged). All other backend contract checks pass, including the seed back-fill invariants (Amara has 6 socials incl. NO github; Hiroshi has email/linkedin/scholar/orcid and NO website/github/twitter; >=3 members with email, >=2 with scholar). Frontend: /team renders vertical stacked rows (flex flex-col), each [data-testid=team-card-{id}] has md:grid-cols-[320px_1fr] photo-left/content-right; all 7 social icons render iff the corresponding field is non-empty, verified for Amara (github absent) and Hiroshi (website/github/twitter absent). Email icon uses href=mailto: with no target; all other icons have target=_blank rel='noopener noreferrer'. Admin dialog contains all 7 testid'd social inputs — edit (twitter update) persists on public /team; create-with-email-only renders only the email icon. Regression on /publications (5 pubs render) and /contact (form renders) still clean.",
+  "backend_issues": {
+    "critical": [
+      {
+        "endpoint": "PUT /api/admin/team/{id}",
+        "issue": "Empty-string form value does NOT clear social field in DB — violates spec requirement #4. Reproduced directly via curl/requests for both urlencoded and multipart: sending github='' leaves the existing value unchanged. Likely cause: FastAPI/Starlette coerces an empty-string Form value to None when the parameter is Optional[str] with default=None, which makes the `if val is not None: setattr(...)` branch in team_routes.update_team_member() skip the clear. Admin UI therefore CANNOT clear a previously-set social link once it is set.",
+        "priority": "HIGH"
+      }
+    ],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/backend_test.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "Fix PUT /api/admin/team/{id}: distinguish 'field omitted' vs 'field sent as empty string' so that empty string clears the value. Options: (a) Change the Form defaults from `default=None` to `default=Ellipsis` with an explicit sentinel, or more robustly (b) change handler to accept `Request` and inspect `await request.form()` to check key membership, or (c) use a sentinel like `default='__UNCHANGED__'` and treat '' as clear, anything-else-non-None as update. Option (b) is cleanest. After fix, re-run TestTeamSocial.test_update_empty_string_clears_field."
+  ],
+  "critical_code_review_comments": [
+    "team_routes._clean_social correctly returns None for empty/whitespace strings, but it is never called for empty-string inputs because FastAPI has already coerced those to None before the handler sees them — hence the spec-breaking behaviour.",
+    "SocialIcons.jsx: exemplary — filters on `typeof v === 'string' && v.trim().length > 0`, so whitespace-only values are hidden. Email uses mailto: and skips target/rel; other links enforce `target=_blank rel='noopener noreferrer'` (good security defaults).",
+    "TeamCard.jsx: grid `md:grid-cols-[320px_1fr]` cleanly implements photo-left/content-right row; fallback `<User/>` when image_path missing is handled.",
+    "Team.jsx: container `flex flex-col gap-6 lg:gap-8` is correct vertical stack. Kept [data-testid='team-grid'] as per spec.",
+    "TeamManager.jsx dialog: FormData blanket-appends all 7 social fields as '' when the user did not set them — UI-side this is fine for create, but combined with the backend bug above it means you can NEVER clear a link via UI edit either.",
+    "migrate._ensure_team_social_columns is a nice idempotent ALTER TABLE path for SQLite — good DX.",
+    "Consider adding basic URL validation on social inputs (admin UI) so users can't save garbage values; current SocialIcons silently prepends `https://` to anything not matching http(s), which could produce bad links."
+  ],
+  "updated_files": [
+    "/app/backend/tests/backend_test.py"
+  ],
+  "success_rate": {
+    "backend": "98% (45/46 pytest)",
+    "frontend": "100% of tested flows"
+  },
+  "test_credentials": "adminuser / Admin@Secure123 (from /app/memory/test_credentials.md)",
+  "seed_data_creation": "No persistent seed changes. Tests create/delete TEST_-prefixed members. One side-effect: updated twitter of member id=1 (Dr. Amara Okonkwo) to a unique https://twitter.com/ui_<timestamp> URL via the admin UI edit flow — this will persist in the DB until a future test or admin change overwrites it. Not a regression concern (twitter was always set), but flagged for transparency.",
+  "retest_needed": true,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Team social-links feature is LIVE and working except for the PUT-empty-clears bug. 46 backend tests in /app/backend/tests/backend_test.py — new class TestTeamSocial (8 tests, 1 expected-fail until bug is fixed). Key invariant: SocialIcons renders an icon IFF `typeof v === 'string' && v.trim().length > 0`. Key testids: team-card-{id}, team-social-{key}-{id} where key ∈ {website,email,linkedin,twitter,github,scholar,orcid}, admin-team-{key}-input, admin-team-edit-{id}, admin-team-add, admin-team-save, admin-team-dialog. Amara id=1 (no github), Hiroshi id=2 (no website/github/twitter). After main agent fixes the empty-string-clear bug in PUT /api/admin/team/{id}, re-run only TestTeamSocial.test_update_empty_string_clears_field.",
+  "rca of the issue": "Root cause of the empty-string-clear bug: In team_routes.update_team_member, each social field is declared as `website: Optional[str] = Form(default=None)`. When the admin UI submits the field as an empty string (which TeamManager.jsx does for ALL 7 social fields on every save via FormData.append(key, val||'')), FastAPI/Starlette treats the empty string as a missing Optional value and passes `None` to the handler. The guard `if val is not None: setattr(member, f, _clean_social(val))` therefore skips the assignment and the DB value stays unchanged. Reproduction: POST a member with github='https://github.com/x', then PUT the same id with data={'github':''} — the response still shows the old github value. Confirmed with both urlencoded and multipart bodies. Mitigation options in order of preference: (1) accept raw form via `request: Request` and use `await request.form()` to check .get(key) is None vs '' explicitly; (2) change default sentinel to something unambiguous and send that sentinel from the client when unchanged; (3) use Pydantic form model with Field aliases. The test test_update_empty_string_clears_field documents this and will pass once fixed."
+}

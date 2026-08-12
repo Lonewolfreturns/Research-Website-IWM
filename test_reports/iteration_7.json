@@ -1,0 +1,35 @@
+{
+  "summary": "Fix verification PASSED. POST /api/admin/team now accepts the new `facebook` form field and the stale `orcid` Form param is safely accepted-but-ignored (backwards compat). Backend pytest suite 51/51 PASS (up from 44/51 in iter 6). UI admin Add-Member flow creates a member with facebook URL and the public /team page renders the team-social-facebook-{id} icon correctly.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/backend_test.py",
+    "/app/backend/tests/review_spec_test.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Fix applied correctly in /app/backend/routes/team_routes.py: `facebook` Form param added (line 63) and `facebook=_clean_social(facebook)` passed to the TeamMember ORM constructor (line 92). The stale `orcid: Optional[str] = Form(default='')` is still present (line 62) but no longer passed to the ORM — kept as a no-op for backwards compat. This is fine but recommend adding a short `# TODO: remove after clients migrate` comment; otherwise future devs may reinstate the bug.",
+    "SOCIAL_FIELDS tuple on line 16 correctly contains 'facebook' so the PUT handler's raw form iteration works.",
+    "Response model TeamMemberOut correctly omits the `orcid` column — verified in the curl test (orcid key absent from POST 201 response).",
+    "No regressions observed across publications, gallery, contact, settings, auth, rate-limiting, file proxy, or team-social suites."
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "100% (51/51)",
+    "frontend": "100% of tested flow (admin login → Team tab → Add Member with facebook URL → save → public /team renders team-social-facebook-7 icon with correct href https://facebook.com/testprofile)"
+  },
+  "test_credentials": "adminuser / Admin@Secure123 (from /app/memory/test_credentials.md)",
+  "seed_data_creation": "Created TEST_FB_<ts> team member via UI during the frontend flow; cleaned up via DELETE /api/admin/team/{id} (204) after verification. GET /api/team confirms zero TEST_FB_* rows remain.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Review fix is fully verified end-to-end. Curl repro: POST /api/admin/team -F name=X -F role=Y -F facebook=<url> returns 201 with facebook populated + no orcid key; DELETE returns 204. Pytest 51/51 pass. UI flow created member id=7 with facebook icon rendered on public /team, then cleaned up. The only lingering minor item is whether the main agent wants to fully drop the `orcid` Form param from create_team_member — currently kept for backwards compat per the review request and is functionally harmless.",
+  "rca of the issue": "N/A — no new bug found. Previous iteration's RCA (orcid kwarg leaking into ORM in create_team_member + missing `facebook` Form param) has been correctly remedied."
+}

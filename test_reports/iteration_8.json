@@ -1,0 +1,47 @@
+{
+  "summary": "Verified contact-form recipient routing via Site Settings with monkey-patched resend.Emails.send. 59/60 pytest PASS across full backend suite. The main spec (to_override kwarg, admin-editable SiteSettings.email used as primary recipient, ADMIN_EMAIL env fallback, submission always persisted, endpoint never surfaces 500) is fully working end-to-end. One minor edge-case bug found: a SiteSettings.email value composed entirely of whitespace is not falling back to ADMIN_EMAIL — send_contact_email raises RuntimeError instead. Because the endpoint wraps in try/except, the client still gets 200 and the row is persisted, so user-facing behaviour is intact; only the admin-email fallback promise is broken for the whitespace case.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {
+        "endpoint": "email_service.send_contact_email / POST /api/contact",
+        "issue": "Whitespace-only to_override (e.g. site.email='   ') does NOT fall back to ADMIN_EMAIL. `recipient = (to_override or ADMIN_EMAIL or '').strip()` picks the truthy whitespace string, strips to empty, and raises RuntimeError. Spec says: 'If SiteSettings.email is empty/whitespace, the handler must fall back to ADMIN_EMAIL'. User is unaffected (endpoint still returns 200 and persists submission) but the fallback email is never sent."
+      }
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/contact_email_routing_test.py",
+    "/app/backend/tests/backend_test.py",
+    "/app/backend/tests/review_spec_test.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "Fix whitespace fallback in email_service.py line 71. Suggested: `_override = (to_override or '').strip(); recipient = _override or (ADMIN_EMAIL or '').strip()`. Alternatively, fix at source in contact_routes.py: `recipient = site.email.strip() if site and site.email and site.email.strip() else None`.",
+    "Optional: strip/normalise settings.email server-side in PUT /api/admin/settings so whitespace never persists (defence-in-depth)."
+  ],
+  "critical_code_review_comments": [
+    "email_service.py:71 — `(to_override or ADMIN_EMAIL or '').strip()` has the whitespace-fallback hole described above; non-blocking but violates the spec for the whitespace case.",
+    "contact_routes.py:80 — `recipient = (site.email if site and site.email else None)` passes through whitespace-only values untouched; combined with the email_service line this causes the only failing spec test. Should also `.strip()` here.",
+    "contact_routes.py correctly wraps send_contact_email in try/except and always returns 200 with the DB row persisted — invariant test_persists_when_resend_raises confirms this.",
+    "Verified via monkey-patch that params['to'] captures the live SiteSettings value (lab-test@iwm-lab.ca used in the in-process test, matching the manual curl repro in the review note).",
+    "No regressions observed across auth, team (incl. facebook rename), gallery (image+embed), publications (both-source rules), settings, file proxy, rate-limit, or contact-form baseline suites."
+  ],
+  "updated_files": [
+    "/app/backend/tests/contact_email_routing_test.py (new — 9 targeted tests covering spec)"
+  ],
+  "success_rate": {
+    "backend": "98% (59/60 pytest). Routing spec + persistence invariant + None/empty fallback + RuntimeError-when-both-empty all PASS. Only the whitespace-only fallback edge case fails.",
+    "frontend": "not tested (backend-only per request)"
+  },
+  "test_credentials": "adminuser / Admin@Secure123 (from /app/memory/test_credentials.md)",
+  "seed_data_creation": "Contact submissions with prefix TEST_Routing_* inserted via POST /api/contact during routing tests (6 rows). SiteSettings.email toggled between 'lab-test@iwm-lab.ca', 'first-routed@iwm-lab.ca', 'second-routed@iwm-lab.ca', '' — restored to 'contact@iwm-lab.ca' at module teardown (verified via GET /api/settings).",
+  "retest_needed": true,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Tests use FastAPI TestClient in-process (pytest from /app/backend with REACT_APP_BACKEND_URL exported) so resend.Emails.send can be monkey-patched and params['to'] inspected. When re-running, ensure REACT_APP_BACKEND_URL is in env: `export REACT_APP_BACKEND_URL=$(grep REACT_APP_BACKEND_URL /app/frontend/.env | cut -d= -f2 | tr -d '\"')`. After the whitespace-fallback fix, the single failing test `TestSendContactEmailUnit::test_fallback_when_override_is_empty_or_whitespace` should pass without modification. SiteSettings is a singleton row (id=1) — always restore email to 'contact@iwm-lab.ca' on teardown.",
+  "rca of the issue": "RCA of whitespace-fallback bug — Reproduction: (1) PUT /api/admin/settings with json={'email':'   '} (Note: currently accepted as-is by the API). (2) POST /api/contact. Expected: Resend called with ADMIN_EMAIL. Actual: email_service raises RuntimeError('No contact recipient configured') and caller swallows it; no email is sent. Root cause: in email_service.py line 71, `(to_override or ADMIN_EMAIL or '').strip()` evaluates `to_override` for Python truthiness BEFORE stripping — a non-empty whitespace string is truthy, so `or ADMIN_EMAIL` is never evaluated; the subsequent `.strip()` then collapses it to ''. Mitigation: strip to_override first, THEN short-circuit: `override = (to_override or '').strip(); recipient = override or (ADMIN_EMAIL or '').strip()`. Impact: low — endpoint still returns 200 and submission is persisted; only the fallback delivery is lost. No data corruption."
+}

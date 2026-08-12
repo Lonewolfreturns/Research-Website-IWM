@@ -1,0 +1,326 @@
+{
+  "_source": "https://www.dal.ca/faculty/agriculture/faculty/eng/gordon-price/publications.html",
+  "_note": "Peer-reviewed articles listed as published. Entries marked (submitted) or 'In Preparation' on the source page are deliberately excluded. tier drives display_order: 1 = core IWM (waste, biosolids, composting, recovery), 2 = emerging substances of concern from land-applied biosolids, 3 = soil science adjacent, 4 = other crops/sensing. Within a tier, newest first.",
+  "publications": [
+    {
+      "tier": 1,
+      "year": 2021,
+      "title": "A Compost Based Closed-Loop Cultivation Approach for Urban Controlled Environment Agriculture",
+      "authors": "D'Souza, A., Price, G.W., Dixon, M., Graham, T.",
+      "venue": "Sustainability 13, 2471:1-27",
+      "doi": "10.3390/su13052471"
+    },
+    {
+      "tier": 1,
+      "year": 2020,
+      "title": "Microbial co-occurrence network analysis of soils receiving short- and long-term applications of alkaline treated biosolids",
+      "authors": "Price, G.W., Langille, M.G.I., Yurgel, S.",
+      "venue": "Science of the Total Environment 751, 141687",
+      "doi": "10.1016/j.scitotenv.2020.141687"
+    },
+    {
+      "tier": 1,
+      "year": 2020,
+      "title": "Elemental fluxes in two forest soils amended with alkaline-treated biosolids, agricultural lime, and wood fly-ash under greenhouse conditions",
+      "authors": "Keys, K., Burton, D.L., Price, G.W., Duinker, P.N.",
+      "venue": "Canadian Journal of Forest Research 51",
+      "doi": "10.1139/cjfr-2020-0114"
+    },
+    {
+      "tier": 1,
+      "year": 2020,
+      "title": "Removal of Cadmium (II) using water hyacinth biochar alginate beads in waste aqueous solutions",
+      "authors": "Liu, C., Ye, J., Lin, Y., Wu, J., Price, G.W., Burton, D., Wang, Y.",
+      "venue": "Environmental Pollution 264",
+      "doi": "10.1016/j.envpol.2020.114785"
+    },
+    {
+      "tier": 1,
+      "year": 2020,
+      "title": "Responses of nematode, bacterial, and fungal populations to high frequency applications and increasing rates of biosolids in an agricultural soil",
+      "authors": "Mills, A.A.S., Price, G.W., Fillmore, S.A.E.",
+      "venue": "Applied Soil Ecology 148",
+      "doi": "10.1016/j.apsoil.2019.103481"
+    },
+    {
+      "tier": 1,
+      "year": 2018,
+      "title": "Forest Floor Chemistry and Mineral Soil Ion Exposure after Surface Application of Alkaline-Treated Biosolids under Two White Spruce (Picea glauca) Plantations in Nova Scotia, Canada",
+      "authors": "Keys, K., Burton, D.L., Price, G.W., Duinker, P.N.",
+      "venue": "Forest Ecology and Management 417, 208-221",
+      "doi": "10.1016/j.foreco.2018.02.040"
+    },
+    {
+      "tier": 1,
+      "year": 2017,
+      "title": "Effects of temperature and activation on biochar chemical properties and their impact on ammonium, nitrate and phosphate sorption",
+      "authors": "Zhang, H., Voroney, R.P., Price, G.W.",
+      "venue": "Journal of Environmental Quality 46, 889-896",
+      "doi": "10.2134/jeq2017.02.0043"
+    },
+    {
+      "tier": 1,
+      "year": 2016,
+      "title": "Linking short-term soil carbon and nitrogen dynamics to evaluate environmental and stoichiometric controls on fresh organic matter decomposition in agro-ecosystems",
+      "authors": "Gillis, J.D., Price, G.W.",
+      "venue": "Geoderma 274, 35-44",
+      "doi": "10.1016/j.geoderma.2016.03.026"
+    },
+    {
+      "tier": 1,
+      "year": 2016,
+      "title": "Sulphur-enriched biochar as a potential soil amendment and fertilizer",
+      "authors": "Zhang, H., Voroney, R.P., Price, G.W., White, A.W.",
+      "venue": "Soil Research 55, 93-99",
+      "doi": "10.1071/sr15256"
+    },
+    {
+      "tier": 1,
+      "year": 2016,
+      "title": "Attitudes to the recovery and recycling of agricultural plastics waste: A case study of Nova Scotia, Canada",
+      "authors": "Muise, I., Adams, M., Cote, R., Price, G.W.",
+      "venue": "Resources, Conservation and Recycling 109, 137-145",
+      "doi": "10.1016/j.resconrec.2016.02.011"
+    },
+    {
+      "tier": 1,
+      "year": 2016,
+      "title": "Impact of annual and single application of alkaline treated biosolids on soil extractable phosphorus and total phosphorus",
+      "authors": "Shu, W., Price, G.W., Sharifi, M., Cade-Menun, B.",
+      "venue": "Agriculture, Ecosystems & Environment 219, 111-118",
+      "doi": "10.1016/j.agee.2015.12.009"
+    },
+    {
+      "tier": 1,
+      "year": 2015,
+      "title": "Long-term influences on nitrogen dynamics and pH in an acidic sandy soil after single and multi-year applications of alkaline treated biosolids",
+      "authors": "Price, G.W., Astatkie, T., Gillis, J.D., Liu, K.",
+      "venue": "Agriculture, Ecosystems & Environment 208, 1-11",
+      "doi": "10.1016/j.agee.2015.04.010"
+    },
+    {
+      "tier": 1,
+      "year": 2015,
+      "title": "Cost analysis and Life-Cycle Environmental Impacts of three value-added novel bioproducts: processing and production",
+      "authors": "Yiridoe, E.K., Chen, Q., Fry, R., Lynch, D., Price, G.W.",
+      "venue": "Natural Resources Research 24, 65-84",
+      "doi": "10.1007/s11053-014-9237-9"
+    },
+    {
+      "tier": 1,
+      "year": 2015,
+      "title": "Effects of temperature and processing conditions on biochar chemical properties and their influence on soil C and N transformations",
+      "authors": "Zhang, H., Price, G.W., Voroney, R.P.",
+      "venue": "Soil Biology and Biochemistry 83, 19-28",
+      "doi": "10.1016/j.soilbio.2015.01.006"
+    },
+    {
+      "tier": 1,
+      "year": 2014,
+      "title": "Detection and degradation of organic contaminants in an agricultural soil amended with Alkaline Treated Biosolids",
+      "authors": "Gillis, J.D., Price, G.W., Stratton, G.W.",
+      "venue": "Canadian Journal of Soil Science 94(5), 595-604",
+      "doi": "10.4141/cjss2013-123"
+    },
+    {
+      "tier": 1,
+      "year": 2014,
+      "title": "Inactivation of Aleutian Mink Disease Virus through high temperature exposure in vitro and under field-based composting conditions",
+      "authors": "Hussain, I., Price, G.W., Farid, H.",
+      "venue": "Veterinary Microbiology 173, 50-58",
+      "doi": "10.1016/j.vetmic.2014.07.014"
+    },
+    {
+      "tier": 1,
+      "year": 2014,
+      "title": "Effects of biochar amendments on soil microbial biomass and activity",
+      "authors": "Zhang, H., Voroney, R.P., Price, G.W.",
+      "venue": "Journal of Environmental Quality 43, 2104-2114",
+      "doi": "10.2134/jeq2014.03.0132"
+    },
+    {
+      "tier": 1,
+      "year": 2013,
+      "title": "Influence of agricultural wastes and a finished compost on the decomposition of slaughterhouse waste composts",
+      "authors": "Price, G.W., Zeng, J., Arnold, P.",
+      "venue": "Journal of Environmental Management 130, 248-254",
+      "doi": "10.1016/j.jenvman.2013.08.050"
+    },
+    {
+      "tier": 1,
+      "year": 2012,
+      "title": "Evaluation of an aerobic composting process for the management of Specified Risk Materials (SRM)",
+      "authors": "Zeng, J., Price, G.W., Arnold, P.",
+      "venue": "Journal of Hazardous Materials 219-220, 260-266",
+      "doi": "10.1016/j.jhazmat.2012.04.003"
+    },
+    {
+      "tier": 1,
+      "year": 2011,
+      "title": "Evaluation of three composting systems for the management of spent coffee grounds",
+      "authors": "Liu, K., Price, G.W.",
+      "venue": "Bioresource Technology 102, 7966-7974",
+      "doi": "10.1016/j.biortech.2011.05.073"
+    },
+    {
+      "tier": 1,
+      "year": 2011,
+      "title": "Comparison of a novel model to three conventional models describing carbon mineralization from soil amended with organic residues",
+      "authors": "Gillis, J.D., Price, G.W.",
+      "venue": "Geoderma 160, 304-310",
+      "doi": "10.1016/j.geoderma.2010.09.025"
+    },
+    {
+      "tier": 1,
+      "year": 2009,
+      "title": "Crop performance on soils receiving annual papermill biosolid amendments with and without supplementary nitrogen",
+      "authors": "Price, G.W., Voroney, R.P., Chong, C.",
+      "venue": "Canadian Journal of Soil Science 89, 269-279",
+      "doi": "10.4141/cjss08014"
+    },
+    {
+      "tier": 1,
+      "year": 2008,
+      "title": "Response to annual applications of de-inked papermill biosolids by field earthworms on three agricultural soils",
+      "authors": "Price, G.W., Voroney, R.P.",
+      "venue": "Applied Soil Ecology 38, 230-238",
+      "doi": "10.1016/j.apsoil.2007.10.014"
+    },
+    {
+      "tier": 1,
+      "year": 2007,
+      "title": "Papermill biosolid effects on soil physical and chemical properties",
+      "authors": "Price, G.W., Voroney, R.P.",
+      "venue": "Journal of Environmental Quality 36, 1704-1714",
+      "doi": "10.2134/jeq2007.0043"
+    },
+    {
+      "tier": 2,
+      "year": 2021,
+      "title": "Biodegradation kinetics of individual and mixture non-steroidal anti-inflammatory drugs in an agricultural soil",
+      "authors": "Shu, W., Price, G.W., Jamieson, R., Lake, C.",
+      "venue": "Science of the Total Environment 755, 142520",
+      "doi": "10.1016/j.scitotenv.2020.142520"
+    },
+    {
+      "tier": 2,
+      "year": 2017,
+      "title": "Sorption and desorption dynamics of selected Non-steroidal Anti-inflammatory Drugs in an agricultural soil",
+      "authors": "Zhang, Y., Price, G.W., Jamieson, R., Burton, D., Khosravi, K.",
+      "venue": "Chemosphere 174, 628-637",
+      "doi": "10.1016/j.chemosphere.2017.02.027"
+    },
+    {
+      "tier": 2,
+      "year": 2017,
+      "title": "Effect of soil biochar concentration on the mitigation of emerging organic contaminant uptake in lettuce",
+      "authors": "Hurtado, C., Cañameras, N., Domínguez, C., Price, G.W., Comas, J., Bayona, J.M.",
+      "venue": "Journal of Hazardous Materials 323, Part A, 386-393",
+      "doi": "10.1016/j.jhazmat.2016.04.046"
+    },
+    {
+      "tier": 2,
+      "year": 2017,
+      "title": "Fate and transport modeling of phthalate esters from biosolid amended soil under corn cultivation",
+      "authors": "Sayyad, G., Price, G.W., Sharifi, M., Khosravi, K.",
+      "venue": "Journal of Hazardous Materials 323, Part A, 264-273",
+      "doi": "10.1016/j.jhazmat.2016.07.032"
+    },
+    {
+      "tier": 2,
+      "year": 2017,
+      "title": "Lethal and sub-lethal effects of triclosan toxicity to the earthworm Eisenia fetida assessed through GC-MS metabolomics",
+      "authors": "Gillis, J.D., Price, G.W., Prasher, S.",
+      "venue": "Journal of Hazardous Materials 323, Part A, 203-211",
+      "doi": "10.1016/j.jhazmat.2016.07.022"
+    },
+    {
+      "tier": 2,
+      "year": 2015,
+      "title": "Determination of phthalates in soils and biosolids using accelerated solvent extraction coupled with SPE Clean up and GC-MS quantification",
+      "authors": "Khosravi, K., Price, G.W.",
+      "venue": "Microchemical Journal 121, 205-212",
+      "doi": "10.1016/j.microc.2015.03.013"
+    },
+    {
+      "tier": 3,
+      "year": 2012,
+      "title": "Crop and soil nitrogen responses to phosphorus and potassium fertilization and drip irrigation under processing tomato",
+      "authors": "Liu, K., Zhang, T., Tan, C., Astatkie, T., Price, G.W.",
+      "venue": "Nutrient Cycling in Agroecosystems 93, 151-162",
+      "doi": "10.1007/s10705-012-9506-0"
+    },
+    {
+      "tier": 3,
+      "year": 2004,
+      "title": "Biophysical and ecological interactions in a temperate tree-based intercropping system",
+      "authors": "Thevathasan, N.V., Gordon, A.M., Simpson, J.A., Reynolds, P., Price, G.W., Zhang, P.",
+      "venue": "Journal of Crop Improvement 12, 339-363",
+      "doi": "10.1201/9781482298017-19"
+    },
+    {
+      "tier": 3,
+      "year": 1999,
+      "title": "Spatial and temporal distribution of earthworms under intercropping in southern Ontario, Canada",
+      "authors": "Price, G.W., Gordon, A.M.",
+      "venue": "Agroforestry Systems 44, 141-149",
+      "doi": "10.1023/a:1006213603150"
+    },
+    {
+      "tier": 4,
+      "year": 2021,
+      "title": "A Deep Learning Approach for RGB Image-Based Powdery Mildew Disease Detection on Strawberry Leaves",
+      "authors": "Shin, J., Chang, Y.K., Heung, B., Nguyen-Quang, T., Price, G.W., Al-Mallahi, A.",
+      "venue": "Computers and Electronics in Agriculture 183",
+      "doi": "10.1016/j.compag.2021.106042"
+    },
+    {
+      "tier": 4,
+      "year": 2020,
+      "title": "In Field Sensing of Strawberry Powdery Mildew Disease using a Machine Vision System",
+      "authors": "Mahmud, Md.S., Zaman, Q.U., Esau, T., Chang, Y., Price, G.W., Prithiviraj, B.",
+      "venue": "Agronomy 10(7), 1027",
+      "doi": "10.3390/agronomy10071027"
+    },
+    {
+      "tier": 4,
+      "year": 2020,
+      "title": "Effect of directional augmentation using supervised machine learning techniques – A case study of strawberry powdery mildew detection",
+      "authors": "Shin, J., Chang, Y.K., Heung, B., Nguyen-Quang, T., Price, G.W., Al-Mallahi, A.",
+      "venue": "Biosystems Engineering 194, 49-60",
+      "doi": "10.1016/j.biosystemseng.2020.03.016"
+    },
+    {
+      "tier": 4,
+      "year": 2020,
+      "title": "Emergy Analysis of Two Typical Peach Cultivation Patterns in the Villages, Fujian Province",
+      "authors": "Luo, X.H., Du, L., Chen, H., Liu, C.W., Price, G.W., Liu, P., Weng, B., Zhang, J.",
+      "venue": "Fujian Journal of Agricultural Sciences 35, 111-116",
+      "doi": "10.19303/j.issn.1008-0384.2020.01.015"
+    },
+    {
+      "tier": 4,
+      "year": 2019,
+      "title": "Evaluation of ecological and economic benefits of pomelo orchards with different grass growing systems based on emergy analysis",
+      "authors": "Luo, X.H., Lu, X.K., Liu, C.W., Zhang, L.J., Chen, E., Price, G.W., Weng, B.Q.",
+      "venue": "Chinese Journal of Eco-Agriculture 27(12), 1916-1924",
+      "doi": ""
+    },
+    {
+      "tier": 4,
+      "year": 2019,
+      "title": "Comparison of Image Texture Based Supervised Learning Classifiers for Strawberry Powdery Mildew Detection",
+      "authors": "Chang, Y., Mahmud, Md.S., Shin, J., Price, G.W., Nguyen-Quang, T., Prithiviraj, B.",
+      "venue": "AgriEngineering 1, 434-452",
+      "doi": "10.3390/agriengineering1030032"
+    },
+    {
+      "tier": 4,
+      "year": 2019,
+      "title": "Development of an artificial cloud lighting condition system using machine vision for strawberry powdery mildew disease detection",
+      "authors": "Mahmud, Md.S., Zaman, Q.U., Esau, T., Price, G.W., Prithiviraj, B.",
+      "venue": "Computers and Electronics in Agriculture 158, 219-225",
+      "doi": "10.1016/j.compag.2019.02.007"
+    }
+  ]
+}

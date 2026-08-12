@@ -1,0 +1,191 @@
+{
+  "_source": "https://www.iwmresearch.net/team-3 (the group's previous site)",
+  "_note": "`group` is set explicitly on every record rather than left to auto-detection from the role text. Several roles would otherwise be filed wrongly — 'Engineering Summer Research Assistant' contains 'engineer' and would land in Technical Staff, and 'Adjunct Faculty' / 'Associated Researcher' match no tier at all. `alumni` is true only where the source says the person defended or has moved on; the 2023-24 assistants are left as current because the old site did not say otherwise — worth a check before importing. The two 'Open PhD Position' entries are vacancies, not people, and are not included.",
+  "team": [
+    {
+      "name": "Gordon Price",
+      "role": "Principal Investigator — Professor, Biowaste and Processing Systems",
+      "group": "principal-investigator",
+      "alumni": false,
+      "bio": "PhD in soil biochemistry, in the Department of Engineering, Faculty of Agriculture. Hired as the Innovative Waste Management Research Chair in 2007 to establish a programme of research on environmental sustainability centred around organic wastes. Research covers the management and valorization of organic wastes and their impacts on soil health.",
+      "email": "gprice@dal.ca"
+    },
+    {
+      "name": "Weixi Shu",
+      "role": "Postdoctoral Fellow",
+      "group": "postdoctoral",
+      "alumni": false,
+      "bio": "A graduate of Dalhousie University in both the Faculty of Engineering and the Faculty of Agriculture, with a background in soil science, agriculture and sustainable environmental management. Works on carbon, nitrogen and contaminant cycling, and on MIR-based soil testing for organic carbon assessment.",
+      "email": ""
+    },
+    {
+      "name": "Behnam Asgari Lajayer",
+      "role": "Postdoctoral Fellow",
+      "group": "postdoctoral",
+      "alumni": false,
+      "bio": "Graduated from the University of Tabriz, Iran in 2019. Works on greenhouse gas quantification across food systems, particularly emissions arising from food loss and waste.",
+      "email": ""
+    },
+    {
+      "name": "Gayathri Remani Sudarsanan Pillai",
+      "role": "IWM Technician",
+      "group": "technical",
+      "alumni": false,
+      "bio": "",
+      "email": ""
+    },
+    {
+      "name": "Zheya Lin",
+      "role": "PhD Student",
+      "group": "doctoral",
+      "alumni": false,
+      "bio": "Originally from Fuzhou, China, and came to Canada in 2015 through the joint academic programme offered by Dalhousie University and Fujian Agriculture and Forestry University (FAFU). Researches biosolids and carbon storage in agriculture, and the prediction of soil properties using mid-infrared spectroscopy.",
+      "email": ""
+    },
+    {
+      "name": "Alexis De Laronde",
+      "role": "PhD Student",
+      "group": "doctoral",
+      "alumni": false,
+      "bio": "",
+      "email": ""
+    },
+    {
+      "name": "Mandi Wilson",
+      "role": "PhD Student",
+      "group": "doctoral",
+      "alumni": false,
+      "bio": "",
+      "email": ""
+    },
+    {
+      "name": "Lina Maria Gomez Cortes",
+      "role": "PhD Student",
+      "group": "doctoral",
+      "alumni": false,
+      "bio": "2024 recipient of the Trudy Fellowship granted by the World Wildlife Fund. Researches food loss and waste across the food chains of Colombia and Canada, and the decision support models used to manage them.",
+      "email": ""
+    },
+    {
+      "name": "Mina Mehnati",
+      "role": "PhD Student (co-supervised)",
+      "group": "doctoral",
+      "alumni": false,
+      "bio": "",
+      "email": ""
+    },
+    {
+      "name": "Xiaowen Ni",
+      "role": "PhD Student (co-supervised, McGill University)",
+      "group": "doctoral",
+      "alumni": false,
+      "bio": "",
+      "email": ""
+    },
+    {
+      "name": "Alejandro Quezada",
+      "role": "MSc Student",
+      "group": "masters",
+      "alumni": false,
+      "bio": "From Mexico City, and a graduate of Universidad Autónoma Metropolitana. Completed a Mitacs internship at the UBC Faculty of Forestry. Researches organic waste management practices for sustainable development, covering both anaerobic digestion and aerobic composting pathways.",
+      "email": ""
+    },
+    {
+      "name": "Stuart Downie",
+      "role": "MSc Student",
+      "group": "masters",
+      "alumni": false,
+      "bio": "From Hamilton, Ontario. Earned his HBSc at Trent University in Peterborough, majoring in Environmental Science with a minor in Chemistry. Monitors the impacts of compost, biosolids and manure on soil characteristics and soil organic matter fractions.",
+      "email": ""
+    },
+    {
+      "name": "Charlie Little",
+      "role": "MSc Student",
+      "group": "masters",
+      "alumni": false,
+      "bio": "Originally from Ontario. Completed his BSc in Agriculture at Dalhousie's Agricultural Campus with a double major in animal and environmental science, alongside a certificate in animal welfare. Works on the quantification, characterisation and analysis of microplastics in biosolid-amended agricultural soils.",
+      "email": ""
+    },
+    {
+      "name": "Nandhini Krishnamoorthy",
+      "role": "MSc Student",
+      "group": "masters",
+      "alumni": false,
+      "bio": "",
+      "email": ""
+    },
+    {
+      "name": "Allan Thomson",
+      "role": "Adjunct Faculty — Climate Change Adaptation Coordinator, Perennia Food and Agriculture Corporation",
+      "group": "research-team",
+      "alumni": false,
+      "bio": "From Glasgow, Scotland. Studied agriculture, energy and sustainability at the Scottish Agricultural College before moving to Nova Scotia for his MSc and PhD at Dalhousie University. Spent three and a half years with the Innovative Waste Management programme as a Postdoctoral Research Fellow, working on composting, carbon cycling, greenhouse gas emissions and waste valorization.",
+      "email": ""
+    },
+    {
+      "name": "Ryan Bell",
+      "role": "Associated Researcher — Whale Skeleton Preservation and Mortality Management",
+      "group": "research-team",
+      "alumni": false,
+      "bio": "Born and raised in New Glasgow, Nova Scotia. In 2017 she obtained a Bachelor of Science in Biology and a Diploma in Forensic Science from Saint Mary's University, and is a Licensed Funeral Director and Licensed Embalmer — a very niche set of interests. Works on whale composting and bone analysis, biosolid application, and 3D scanning.",
+      "email": ""
+    },
+    {
+      "name": "Jessie Davidson",
+      "role": "Engineering Summer Research Assistant",
+      "group": "undergraduate",
+      "alumni": false,
+      "bio": "",
+      "email": ""
+    },
+    {
+      "name": "Emmanuel Tsimanga",
+      "role": "Chemistry Co-op Student, Acadia University",
+      "group": "undergraduate",
+      "alumni": false,
+      "bio": "",
+      "email": ""
+    },
+    {
+      "name": "Matthew McLaughlin",
+      "role": "Engineering Summer Research Assistant",
+      "group": "undergraduate",
+      "alumni": false,
+      "bio": "Worked on the programming and development of scalable CO2 gas sensors for environmental monitoring in soils and composts.",
+      "email": ""
+    },
+
+    {
+      "name": "Emily Gowan",
+      "role": "Engineering Co-op Student (NSERC USRA)",
+      "group": "undergraduate",
+      "alumni": true,
+      "bio": "A graduate of the Department of Civil and Resource Engineering at Dalhousie University. Completed two co-op terms with the research group, studying greenhouse gas emissions from fields receiving municipal food waste composts, and is now employed at an engineering firm in Nova Scotia.",
+      "email": ""
+    },
+    {
+      "name": "Anjie Luo",
+      "role": "MSc Student",
+      "group": "masters",
+      "alumni": true,
+      "bio": "Originally from Fuzhou, China, and came to Canada in 2014 through the 2+2 academic programme with Fujian Agriculture and Forestry University and Dalhousie University, earning his bachelor's degree in horticulture and plant science. Defended in 2020 on the effects of decomposition-generated carbon dioxide on plant growth.",
+      "email": ""
+    },
+    {
+      "name": "Qianhan Le",
+      "role": "MSc Student",
+      "group": "masters",
+      "alumni": true,
+      "bio": "Grew up on Zhoushan Island, China's largest archipelago, and holds a BSc in Integrated Environmental Management from Dalhousie's Faculty of Agriculture. Defended in 2023 on the effect of physical, chemical and biological treatment processes on biosolid nitrogen forms and their influence on soil nitrogen mineralization dynamics.",
+      "email": ""
+    },
+    {
+      "name": "Charlie Parent",
+      "role": "MSc Student",
+      "group": "masters",
+      "alumni": true,
+      "bio": "Born in Nova Scotia and raised in Winnipeg, Manitoba. Graduated in Environmental Engineering with a minor in Agricultural Business from the University of Manitoba in 2019. Defended in 2023 on biochar and biochar-alginate composites as adsorbents of lead from wastewater and drinking water.",
+      "email": ""
+    }
+  ]
+}

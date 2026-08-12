@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+Disallow: /x7k2-manage-9qp
+Disallow: /x7k2-manage-9qp/

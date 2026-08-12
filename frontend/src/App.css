@@ -1,0 +1,2 @@
+/* Component-level tweaks (mostly handled in index.css via utility classes). */
+.App { min-height: 100vh; }

@@ -1,0 +1,36 @@
+{
+  "summary": "Iteration 5 — FIX VERIFIED. PUT /api/admin/team/{id} with empty-string social field now correctly clears the value in the DB (root cause fixed by switching handler to inspect `await request.form()` for key membership instead of relying on FastAPI-coerced Form params). Backend: full 46/46 pytest pass, including previously-failing TestTeamSocial.test_update_empty_string_clears_field. Added 3 targeted review-spec tests in /app/backend/tests/review_spec_test.py — all 3 pass: (a) PUT twitter='' on id=1 clears twitter, then restored value persists; (b) PUT github=<url> updates github while leaving the other 6 social fields byte-identical to the pre-call GET; (c) PUT with NO social keys at all leaves all 7 social fields unchanged. No regressions in TestAuth, TestContact, TestPublications, TestAdminTeam. Frontend: sanity-verified end-to-end — admin login → edit Amara (id=1) → blanked twitter input → saved → /team no longer renders [data-testid=team-social-twitter-1] icon. Restored Amara's twitter to https://twitter.com/amara_okonkwo after the test to avoid leaving dirty state.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/backend_test.py",
+    "/app/backend/tests/review_spec_test.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "team_routes.update_team_member fix is clean and minimal: raw `await request.form()` is read once, and the per-social-field loop uses `if field in raw_form` to distinguish omitted vs empty-string. This is the recommended Starlette-idiomatic fix. No reads of `request.body()` elsewhere, so no stream-consumption risk.",
+    "Minor: `raw_form.get(field)` can return an UploadFile for malicious clients who send a file under a social-field key; the isinstance(str) guard handles it by coercing to None (effectively clears). Acceptable.",
+    "Follow-up (non-blocking) from iteration 4 still open: consider URL validation on admin social inputs to prevent garbage values (e.g., 'not-a-url') being accepted and silently https-prefixed by SocialIcons.jsx."
+  ],
+  "updated_files": [
+    "/app/backend/tests/review_spec_test.py"
+  ],
+  "success_rate": {
+    "backend": "100% (46/46 main suite + 3/3 review-spec)",
+    "frontend": "100% of tested flows (admin edit → clear → public /team)"
+  },
+  "test_credentials": "adminuser / Admin@Secure123 (from /app/memory/test_credentials.md)",
+  "seed_data_creation": "No persistent seed changes. Amara's (id=1) twitter was cleared then restored to https://twitter.com/amara_okonkwo at the end of the UI flow test.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "The empty-string-clear bug from iteration 4 is FIXED and fully regression-covered. Total 49 backend tests across 2 files. team_routes.update_team_member now uses raw request.form() for the 7 SOCIAL_FIELDS. Admin UI edit flow end-to-end is working: blanking a social input in the dialog and saving removes the corresponding icon from public /team. No open issues on this feature.",
+  "rca of the issue": "Original root cause (iter 4): FastAPI/Starlette coerces empty-string Form values declared as Optional[str]=None to None before the handler runs, so `if val is not None: setattr(...)` skipped the clear. Fix applied by main agent (iter 5): dropped the per-field Form params for the 7 social fields and read `raw_form = await request.form()` instead, then `for field in SOCIAL_FIELDS: if field in raw_form: setattr(member, field, stripped or None)`. This correctly distinguishes (a) key absent → no mutation, (b) key present with empty/whitespace value → clear, (c) key present with real value → update. Verified by: TestTeamSocial (8/8 pass including test_update_empty_string_clears_field), review_spec_test.py (3/3), and a live browser end-to-end flow against the preview URL."
+}

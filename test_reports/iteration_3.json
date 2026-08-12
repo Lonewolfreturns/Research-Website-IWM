@@ -1,0 +1,38 @@
+{
+  "summary": "Iteration 3 validates the new Publications feature end-to-end (backend + frontend) plus regression on Team, Gallery, Contact, Files, Auth, Settings. Backend: 38/38 pytest pass (11 new TestPublications tests + 27 regression). Frontend: /publications public page renders 5+ seeded items with publication-title-{id} and publication-learnmore-{id}; every 'Learn more' anchor has target='_blank' and rel='noopener noreferrer'. Navbar shows Publications at position 03 (before Gallery). Admin dashboard shows 4 tabs (admin-tab-team, admin-tab-publications, admin-tab-gallery, admin-tab-settings). PublicationsManager mutual-exclusion toggle works: DEFAULT 'Use a link' → link input enabled and file input disabled; switching to 'Upload a document' → file enabled and link disabled; switching back reverses it. Create-in-link-mode persists and appears on the public list. Editing a pub to switch source to 'document' uploads the PDF and persists: backend shows file_path set and external_url null; admin-pub-source-{id} cell now displays 'DOCUMENT' with an ExternalLink anchor; public /publications learnmore for that row carries href=/api/files/iwm-research/publications/<uuid>.pdf with target=_blank and rel=noopener noreferrer. DELETE through UI + API both work. File proxy returns 404 for non-existent paths.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/backend_test.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "publications_routes.py PUT handles three modes (explicit link, explicit document, implicit swap) — logic is correct but fairly long; consider extracting a helper `_apply_source_change(pub, mode, url, file)` to DRY up the three branches.",
+    "All publication file uploads go through storage.put_object with build_path('publications', …) — consistent with gallery/team conventions; mime guessed via guess_mime with pdf default (good).",
+    "Invariant block at end of update_publication (exactly one source) is a nice safety net — keep it.",
+    "Public GET /publications returns file_path as-is; frontend correctly constructs {REACT_APP_BACKEND_URL}/api/files/{file_path} for the learnmore href. Confirmed via eval.",
+    "Consider indexing publications.display_order for large lists (optional, not urgent).",
+    "Admin mutual-exclusion is correctly enforced on BOTH client (disabled attribute) AND server (400 on both/neither) — defensive design."
+  ],
+  "updated_files": [
+    "/app/backend/tests/backend_test.py"
+  ],
+  "success_rate": {
+    "backend": "100% (38/38)",
+    "frontend": "100% of tested flows"
+  },
+  "test_credentials": "adminuser / Admin@Secure123 (from /app/memory/test_credentials.md)",
+  "seed_data_creation": "No seeding changes. Test flow created two temporary publications via UI and API, then deleted them; backend returns to the 5 seeded rows after the run.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Publications feature fully working. 38 backend tests in /app/backend/tests/backend_test.py (new class TestPublications). Key selectors: admin-tab-publications, admin-publications-manager, admin-pub-add, admin-pub-dialog, admin-pub-mode-link, admin-pub-mode-document, admin-pub-link-input, admin-pub-file-input, admin-pub-title-input, admin-pub-year-input, admin-pub-save, admin-pub-row-{id}, admin-pub-edit-{id}, admin-pub-delete-{id}, admin-pub-source-{id}. Public: publications-page, publications-list, publication-title-{id}, publication-learnmore-{id} (always target=_blank rel='noopener noreferrer'). PUT /api/admin/publications/{id} accepts source_mode in ('link','document','') and enforces exactly-one-source invariant. File proxy: /api/files/iwm-research/publications/<uuid>.<ext>.",
+  "rca of the issue": "N/A — all tests pass."
+}

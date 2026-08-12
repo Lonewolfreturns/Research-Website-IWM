@@ -1,0 +1,71 @@
+{
+  "_source": "https://www.iwmresearch.net/s-projects-side-by-side (the group's previous site)",
+  "_note": "Descriptions are the old site's wording, lightly trimmed. `people` is left blank except where the source names someone — filling it in the admin turns matching roster names into links to their team card. `status` on the whale project is an assumption from its 2017 date and past-tense description; change it in the admin if it is still running.",
+  "projects": [
+    {
+      "title": "Quantifying the carbon footprints and greenhouse gas emissions from source separate organics facilities",
+      "status": "Ongoing",
+      "year": "",
+      "summary": "Measuring the carbon and nutrient footprints of managing municipal organics across landfills, composting facilities and biogas digesters, at national scale.",
+      "description": "A research collaboration between McGill University, Queen's University and Dalhousie University focusing on the carbon and nutrient footprints of managing municipal organics in landfills, composting facilities, and biogas digesters across Canada.",
+      "people": "",
+      "partners": "McGill University, Queen's University, Dalhousie University",
+      "funding": "Environment and Climate Change Canada — Climate Action and Awareness Fund",
+      "sponsors": "Municipal, provincial, federal and non-governmental partners",
+      "external_url": "",
+      "image_path": ""
+    },
+    {
+      "title": "Decarbonizing Canada's food value chain to mitigate climate change",
+      "status": "Ongoing",
+      "year": "",
+      "summary": "Estimating the climate impact of food loss and waste from Canada's Industrial, Commercial and Institutional sectors.",
+      "description": "A national project focusing on estimating the impacts of food loss and waste from the Industrial, Commercial, and Institutional (IC&I) sectors in Canada.",
+      "people": "",
+      "partners": "McGill University, University of Guelph, industry, government and non-governmental organisations",
+      "funding": "NSERC Alliance Missions Grant on Anthropogenic Greenhouse Gas Research",
+      "sponsors": "",
+      "external_url": "",
+      "image_path": ""
+    },
+    {
+      "title": "Developing a national digital soil and soil spectroscopy data platform",
+      "status": "Ongoing",
+      "year": "",
+      "summary": "Aggregating Canada's soil datasets into one openly available platform for environmental monitoring, carbon storage planning and long-term stewardship.",
+      "description": "This project will focus on bringing together the resources and expertise of soil scientists across Canada to aggregate and make openly available soil datasets that can be used for environmental monitoring and planning, establishment of carbon storage opportunities, and ensuring Canada's soil resources are maintained in a sustainable state for future generations.",
+      "people": "",
+      "partners": "Agriculture and Agri-Food Canada (AAFC), soil science groups across Canada",
+      "funding": "NSERC–SSHRC Sustainable Agriculture Research Initiative (SARI)",
+      "sponsors": "",
+      "external_url": "",
+      "image_path": ""
+    },
+    {
+      "title": "Assessing the long-term impacts of municipal biosolids use in agricultural soils",
+      "status": "Ongoing",
+      "year": "",
+      "summary": "A long-running line of work on how soil amendments — municipal biosolids in particular — reshape soil chemistry and ecology over years of repeated application.",
+      "description": "Research based on long-standing work focusing on the influence of soil amendments, particularly municipal biosolids, on soil chemistry and ecology. A large aspect of this research is to evaluate the role of stress and disturbance on soil systems through the use of organic amendments, especially as it relates to the intensity of applications (rates) and the frequency of applications.",
+      "people": "Gordon Price",
+      "partners": "",
+      "funding": "",
+      "sponsors": "",
+      "external_url": "",
+      "image_path": ""
+    },
+    {
+      "title": "Preservation of Blue Whale and North Atlantic right whale skeletons through composting and non-aggressive chemical approaches",
+      "status": "Completed",
+      "year": 2017,
+      "summary": "Using composting and gentle chemical techniques to decompose large marine mammal mortalities and degrease great whale skeletons for preservation — with a 3D archive of every bone.",
+      "description": "In 2017 we undertook a collaboration between Fisheries and Oceans Canada, Dalhousie University and the Marine Animal Rescue Society to investigate the use of composting and other non-aggressive chemical techniques to decompose large mammal mortalities and degrease great whale skeletons for future preservation.\n\nThrough this work we have engaged high school students, members of the community, researchers and graduate students to help in creating a conservation story that relates the impact humans can have on life in the oceans. Our work also involved creating a 3D archive of each bone and generating a range of media to help tell the stories.",
+      "people": "Gordon Price, Ryan Bell",
+      "partners": "Fisheries and Oceans Canada, Dalhousie University, Marine Animal Rescue Society",
+      "funding": "",
+      "sponsors": "",
+      "external_url": "",
+      "image_path": ""
+    }
+  ]
+}

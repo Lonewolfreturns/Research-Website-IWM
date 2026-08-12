@@ -1,0 +1,35 @@
+{
+  "summary": "Re-verified whitespace-fallback fix for contact-form email routing. Full backend suite now 60/60 PASS (was 59/60). The previously failing TestSendContactEmailUnit::test_fallback_when_override_is_empty_or_whitespace now passes, and no regressions in auth, team (incl. facebook rename), gallery (image+embed), publications (both-source rules), settings, file proxy, rate-limit, or contact-form routing.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/contact_email_routing_test.py",
+    "/app/backend/tests/backend_test.py",
+    "/app/backend/tests/review_spec_test.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "email_service.py:71-74 — Fix applied correctly. `override = (to_override or '').strip(); recipient = override or (ADMIN_EMAIL or '').strip()` now strips BEFORE the short-circuit, closing the whitespace-truthiness hole. Guard on line 75-76 raises RuntimeError only when both values are empty after strip — matches spec.",
+    "contact_routes.py:81 — `if site and site.email and site.email.strip()` correctly normalises whitespace-only Site Settings values before forwarding as to_override. Defence-in-depth at both layers.",
+    "Optional nit (non-blocking): PUT /api/admin/settings still accepts whitespace-only email values as-is. Not a functional issue now that both read sites normalise, but stripping at write time would prevent future drift. No action required for this review."
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "100% (60/60 pytest)",
+    "frontend": "not tested (backend-only per request)"
+  },
+  "test_credentials": "adminuser / Admin@Secure123 (from /app/memory/test_credentials.md)",
+  "seed_data_creation": "Contact submissions with prefix TEST_Routing_* inserted via POST /api/contact during routing tests. SiteSettings.email toggled between 'lab-test@iwm-lab.ca', 'first-routed@iwm-lab.ca', 'second-routed@iwm-lab.ca', '' during the run — verified restored to 'contact@iwm-lab.ca' at teardown via GET /api/settings.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend suite is green (60/60). Run: `cd /app/backend && export REACT_APP_BACKEND_URL=$(grep REACT_APP_BACKEND_URL /app/frontend/.env | cut -d= -f2 | tr -d '\"') && python -m pytest tests/ -v --junitxml=/app/test_reports/pytest/pytest_results.xml`. Tests use FastAPI TestClient in-process and monkey-patch resend.Emails.send; SiteSettings is a singleton row (id=1).",
+  "rca of the issue": "Previously-reported whitespace-fallback bug is resolved. Fix applied at both layers: (1) email_service.py strips to_override before evaluating truthiness, so '   ' → '' → falls back to ADMIN_EMAIL as spec requires. (2) contact_routes.py normalises settings.email with .strip() before forwarding. Verified by re-running the dedicated regression test test_fallback_when_override_is_empty_or_whitespace which now passes deterministically."
+}

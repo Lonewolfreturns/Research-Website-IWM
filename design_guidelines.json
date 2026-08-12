@@ -1,0 +1,87 @@
+{
+  "theme": "LIGHT",
+  "archetype": "Archetype 1 (Organic & Earthy)",
+  "vibe": "Academic, rigorous, sustainable, archival, trustworthy. A specialized Organic & Earthy mixed with Swiss Typography.",
+  "typography": {
+    "headings": "Spectral",
+    "body": "IBM Plex Sans",
+    "mono": "JetBrains Mono",
+    "hierarchy_rules": "Headings MUST use tight letter spacing (tracking-tight). Max H1 size is text-5xl sm:text-6xl+. Body text text-base. Overlines MUST be Uppercase + Tiny + Wide Spacing (tracking-[0.2em]). NEVER use Inter, Roboto, or Space Grotesk."
+  },
+  "colors": {
+    "background": "#F9F8F6",
+    "background_secondary": "#E6E4DD",
+    "text_primary": "#1C2722",
+    "text_secondary": "#4A5A52",
+    "accent_primary": "#B95438",
+    "border": "#D1CEC7",
+    "rules": "Never use pure black or white. Tint neutral greys with warm stone tones. Terracotta (#B95438) used strictly for key CTAs and alerts."
+  },
+  "layout_and_spacing": {
+    "spacing_scale": "Generous spacing. p-8, p-12, p-24 for sections. Containers with borders MUST have internal padding.",
+    "grid_system": "Asymmetric grids. Consider a visible grid/archival look (border-collapse style). 1px borders between columns. Do not center everything.",
+    "alignment": "Optical left-alignment for paragraphs and forms. Tension over perfect symmetry."
+  },
+  "components": {
+    "navbar": "Glassmorphism with warm stone tint (bg-[#F9F8F6]/80 backdrop-blur-xl), sharp 1px bottom border border-[#D1CEC7]. Navigation must be visible on desktop.",
+    "hero": "Hero layout should be asymmetric. Overlay must not be a flat dark blanket. Use subtle gradient to transparent, or keep image adjacent to text. High impact typography.",
+    "team_card": "No shadows. 1px solid border (#D1CEC7). Grayscale or muted photos. Clean, dense text at bottom. Archival card look. Use pure HTML + Tailwind.",
+    "gallery_masonry": "True masonry layout. Gap-4 or gap-6. Lightbox support. Minimal UI overlays on images.",
+    "contact_form": "Shadcn components heavily customized. Square corners (rounded-none), 1px solid borders, earthy active ring color.",
+    "admin_dashboard": "Dense, functional, pure Shadcn but flat. No rounded corners. Compact spacing. Sharp edges, cardless or max 8px border-radius.",
+    "testing": "All interactive and key informational elements MUST include a `data-testid` attribute."
+  },
+  "motion_and_interactions": {
+    "hover_states": "Crisp transitions. Borders darken on hover. Text color explicitly set on hover. No excessive scaling.",
+    "animations": "Subtle entrance animations, staggered fade-in for lists/gallery. Respect prefers-reduced-motion."
+  },
+  "media_urls": {
+    "hero": [
+      {
+        "url": "https://images.pexels.com/photos/9574456/pexels-photo-9574456.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "description": "Scientist in modern lab setting. Good for abstract hero background."
+      },
+      {
+        "url": "https://images.pexels.com/photos/8442033/pexels-photo-8442033.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "description": "Well-equipped laboratory with microscope."
+      }
+    ],
+    "team": [
+      {
+        "url": "https://images.unsplash.com/photo-1758685848602-09e52ef9c7d3?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDN8MHwxfHNlYXJjaHw0fHxsYWJvcmF0b3J5JTIwcmVzZWFyY2hlciUyMHBvcnRyYWl0fGVufDB8fHx8MTc3NjYwMDYyNHww&ixlib=rb-4.1.0&q=85",
+        "description": "Woman researcher in lab coat."
+      },
+      {
+        "url": "https://images.pexels.com/photos/5726691/pexels-photo-5726691.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "description": "Confident female scientist in PPE."
+      },
+      {
+        "url": "https://images.pexels.com/photos/8917910/pexels-photo-8917910.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "description": "Scientist sitting in lab with chemical solutions."
+      }
+    ],
+    "gallery": [
+      {
+        "url": "https://images.pexels.com/photos/5099276/pexels-photo-5099276.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "description": "Aerial shot of recyclable material stacks."
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1756362400579-2e7992495dba?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1MDV8MHwxfHNlYXJjaHwzfHx3YXN0ZSUyMHJlY3ljbGluZyUyMGZhY2lsaXR5fGVufDB8fHx8MTc3NjYwMDYyNHww&ixlib=rb-4.1.0&q=85",
+        "description": "Stack of used black rubber tires."
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1763315156830-07870b159121?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1MDV8MHwxfHNlYXJjaHwxfHx3YXN0ZSUyMHJlY3ljbGluZyUyMGZhY2lsaXR5fGVufDB8fHx8MTc3NjYwMDYyNHww&ixlib=rb-4.1.0&q=85",
+        "description": "Worker feeding blue material onto conveyor belt."
+      },
+      {
+        "url": "https://images.pexels.com/photos/22989049/pexels-photo-22989049.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "description": "Aerial photo of a recycling facility."
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1769985136551-292a7444073b?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMzl8MHwxfHNlYXJjaHwzfHxhYnN0cmFjdCUyMG9yZ2FuaWMlMjBlYXJ0aCUyMHRleHR1cmV8ZW58MHx8fHwxNzc2NjAwNjM1fDA&ixlib=rb-4.1.0&q=85",
+        "description": "Cracked dry earth texture."
+      }
+    ]
+  },
+  "instructions_to_main_agent": "Implement a full-stack application using FastAPI (backend) and React + Tailwind (frontend). STRICTLY follow the design rules in this JSON. Do not use generic Inter/Roboto fonts, use Spectral for headings and IBM Plex Sans for body. Do not use center-heavy layouts; rely on asymmetric bento grids and visible grid lines for an 'archival/library' look. Use pure HTML/Tailwind for marketing sections (Home, Team, Gallery). Use Shadcn ONLY for interactive logic (Forms, Admin Dashboard) and heavily customize Shadcn to have sharp corners (rounded-none) and earthy active states. Build the CRUD for Team/Gallery via FastAPI and secure the admin panel at a secret URL."
+}

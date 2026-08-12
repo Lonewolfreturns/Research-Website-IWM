@@ -1,0 +1,47 @@
+{
+  "summary": "Iteration 6 — orcid→facebook rename is 90% complete but has ONE CRITICAL backend bug in POST /api/admin/team. GET /api/team is correct (no orcid key, facebook populated on 4 researchers: Amara, Elena, Priya, Miguel). Public /team frontend is perfect: team-social-facebook-{id} icons render for ids 1/3/5/6, NOT for id 2 (Hiroshi), all with target='_blank' rel='noopener noreferrer'. Zero 'orcid' or 'fingerprint' references in public HTML. Admin dialog has data-testid='admin-team-facebook-input'. PUT /api/admin/team/{id} with facebook=<url> updates correctly; facebook='' clears (iter-5 empty-string-clear fix extends to new field). BUT POST /api/admin/team returns 500 'TypeError: orcid is an invalid keyword argument for TeamMember' because backend/routes/team_routes.py create_team_member still declares `orcid: Optional[str] = Form(default='')` (line 62) and passes `orcid=_clean_social(orcid)` to TeamMember() (line 91), while the model no longer has that column. The `facebook` Form param is also MISSING from the create signature, so even if the orcid kwarg is removed, new members cannot be created with a facebook link. Test results: 44/51 pass. All 7 failures cascade from this single root cause (create returns 500 → class-level created_id stays None → subsequent PUT/DELETE tests skip).",
+  "backend_issues": {
+    "critical": [
+      {
+        "endpoint": "POST /api/admin/team",
+        "issue": "Returns 500 for every request. Root cause at /app/backend/routes/team_routes.py: line 62 still has `orcid: Optional[str] = Form(default='')` and line 91 passes `orcid=_clean_social(orcid)` to models.TeamMember(...), but the model dropped the orcid column. TypeError: 'orcid' is an invalid keyword argument for TeamMember. Additionally, the `facebook` Form param is MISSING from the signature, so create cannot accept facebook even after the orcid kwarg is removed.",
+        "priority": "CRITICAL"
+      }
+    ],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/backend_test.py",
+    "/app/backend/tests/review_spec_test.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "In /app/backend/routes/team_routes.py create_team_member: (a) replace `orcid: Optional[str] = Form(default='')` with `facebook: Optional[str] = Form(default='')`, (b) replace `orcid=_clean_social(orcid)` with `facebook=_clean_social(facebook)` in the TeamMember(...) constructor call. No other changes needed — PUT handler already uses the SOCIAL_FIELDS loop that includes facebook."
+  ],
+  "critical_code_review_comments": [
+    "BLOCKER: team_routes.create_team_member is missing the rename — orcid kwarg leaked through to the ORM constructor. Every POST to /api/admin/team returns 500. This breaks the admin 'Add member' flow entirely.",
+    "Model/schema/migrate/PUT/SOCIAL_FIELDS tuple are all consistent and correct. Only the create handler was missed.",
+    "SAMPLE_TEAM back-fill loop (migrate._seed_team) correctly includes 'facebook' in both the update and seed paths.",
+    "Stale `orcid` SQLite column still exists in the live DB — acknowledged as intentional in review_request (SQLite DROP COLUMN is finicky) and is correctly filtered out by TeamMemberOut schema; verified zero `orcid` keys in GET /api/team response.",
+    "Unrelated pre-existing nit (from iter 4): no URL validation on admin social inputs; garbage strings are accepted and https-prefixed by SocialIcons.jsx."
+  ],
+  "updated_files": [
+    "/app/backend/tests/backend_test.py (replaced orcid references with facebook in TestTeamSocial suite so tests reflect the new feature)",
+    "/app/backend/tests/review_spec_test.py (rewrote from iter-5 orcid-focused spec to iter-6 facebook-focused spec covering GET schema, POST create, PUT update, PUT empty-clear, partial-update isolation)"
+  ],
+  "success_rate": {
+    "backend": "86% (44/51). All 7 failures share ONE root cause — POST /api/admin/team 500.",
+    "frontend": "100% of tested flows (public /team Facebook icons for correct members, absent for Hiroshi, no orcid/fingerprint anywhere; admin dialog has admin-team-facebook-input testid — verified in TeamManager.jsx source)."
+  },
+  "test_credentials": "adminuser / Admin@Secure123 (from /app/memory/test_credentials.md)",
+  "seed_data_creation": "None. test_put_facebook_update_and_clear restores Amara's original facebook value. test_partial_update_facebook_leaves_others_intact restores Elena's facebook. test_post_create_with_facebook is expected to fail right now because of the POST bug, so no cleanup needed; once the POST bug is fixed, it will self-clean via DELETE.",
+  "retest_needed": true,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "After the 2-line fix in team_routes.create_team_member, re-run: `cd /app/backend && REACT_APP_BACKEND_URL=<url> python -m pytest tests/review_spec_test.py tests/backend_test.py -v`. Expect 51/51 pass. Test files are already updated for the facebook rename — no further edits needed. UI admin dialog rename (admin-team-facebook-input) is verified via source. If main agent wants one last browser-flow sanity check, the flow is: admin login → edit Hiroshi (id=2) → fill admin-team-facebook-input with a URL → save → public /team renders team-social-facebook-2 icon. PUT side already works; only POST create needs the fix.",
+  "rca of the issue": "Root cause: single missed rename in /app/backend/routes/team_routes.py. The PUT handler was already refactored (iter 5) to iterate SOCIAL_FIELDS via raw request.form(), so it picked up `facebook` automatically when SOCIAL_FIELDS was updated. The POST handler (create_team_member) still uses explicit per-field Form() params, so renaming required two edits that were missed: (1) the Form param declaration `orcid: Optional[str] = Form(default='')` on line 62, and (2) the ORM kwarg `orcid=_clean_social(orcid)` on line 91. The model already dropped the orcid column, so the kwarg call now raises TypeError at instance construction time, surfacing as a 500 to the client. Reproduction: `curl -X POST $BACKEND/api/admin/team -H 'Authorization: Bearer <token>' -F 'name=X' -F 'role=Y'` → 500. Confirmed in /var/log/supervisor/backend.err.log: `TypeError: 'orcid' is an invalid keyword argument for TeamMember` at team_routes.py line 79. Mitigation (2 lines for main agent): replace both occurrences of `orcid` with `facebook` in team_routes.py (the Form param name on line 62 and the kwarg on line 91)."
+}
