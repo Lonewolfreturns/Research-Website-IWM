@@ -27,11 +27,10 @@ export const Footer = () => {
         <div className="md:col-span-3">
           <div className="overline mb-4">Navigate</div>
           <ul className="space-y-2 text-sm">
-            <li><Link to="/" className="ink-link">Overview</Link></li>
+            <li><Link to="/" className="ink-link">Introduction</Link></li>
             <li><Link to="/team" className="ink-link">Team</Link></li>
             <li><Link to="/projects" className="ink-link">Projects</Link></li>
             <li><Link to="/publications" className="ink-link">Publications</Link></li>
-            <li><Link to="/gallery" className="ink-link">Gallery</Link></li>
             <li><Link to="/contact" className="ink-link">Contact</Link></li>
           </ul>
         </div>

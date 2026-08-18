@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Loader2, Plus, Pencil, Trash2, ArrowUp, ArrowDown,
-  Link as LinkIcon, FileText, X, ExternalLink,
+  Link as LinkIcon, FileText, X, ExternalLink, Search,
 } from "lucide-react";
 import { toast } from "sonner";
 import { api, fileUrl, uploadViaPresign } from "../../utils/api";
@@ -9,6 +9,7 @@ import { api, fileUrl, uploadViaPresign } from "../../utils/api";
 export default function PublicationsManager() {
   const [list, setList] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [query, setQuery] = useState("");
   const [dialog, setDialog] = useState(null); // { mode: 'create' | 'edit', pub? }
 
   const load = async () => {
@@ -35,19 +36,49 @@ export default function PublicationsManager() {
     }
   };
 
-const swap = async (idx, dir) => {
-  const j = idx + dir;
-  if (j < 0 || j >= list.length) return;
-  const next = [...list];
-  [next[idx], next[j]] = [next[j], next[idx]];
-  const items = next.map((p, i) => ({ id: p.id, display_order: i + 1 }));
-  try {
-    await api.put("/admin/publications/reorder", { items });
-    load();
-  } catch (e) {
-    toast.error(e?.response?.data?.detail || "Reorder failed");
-  }
-};
+  /**
+   * Found by id in the full list, never by the rendered row index: the
+   * renumber below rewrites the order of every publication, so running it over
+   * a filtered array would quietly renumber the visible few and destroy the
+   * position of everything the search had hidden.
+   *
+   * The arrows are disabled while a search is active for the same reason a
+   * filtered swap is confusing — the neighbour being swapped with may not be on
+   * screen, so the click would look like it did nothing.
+   */
+  const swap = async (pub, dir) => {
+    const idx = list.findIndex((p) => p.id === pub.id);
+    const j = idx + dir;
+    if (idx === -1 || j < 0 || j >= list.length) return;
+    const next = [...list];
+    [next[idx], next[j]] = [next[j], next[idx]];
+    const items = next.map((p, i) => ({ id: p.id, display_order: i + 1 }));
+    try {
+      await api.put("/admin/publications/reorder", { items });
+      load();
+    } catch (e) {
+      toast.error(e?.response?.data?.detail || "Reorder failed");
+    }
+  };
+
+  const filtering = query.trim().length > 0;
+
+  /**
+   * Matches title, authors, venue and year, plus "link"/"document" so the two
+   * source kinds can be pulled apart — a bare year like "2016" is the quickest
+   * way into a list this long.
+   */
+  const visible = useMemo(() => {
+    const terms = query.toLowerCase().split(/\s+/).filter(Boolean);
+    if (terms.length === 0) return list;
+    return list.filter((p) => {
+      const haystack = [
+        p.title, p.authors, p.venue, p.year,
+        p.file_path ? "document" : "link",
+      ].filter(Boolean).join(" ").toLowerCase();
+      return terms.every((term) => haystack.includes(term));
+    });
+  }, [list, query]);
   return (
     <div data-testid="admin-publications-manager">
       <div className="flex items-center justify-between mb-6">
@@ -63,6 +94,40 @@ const swap = async (idx, dir) => {
           <Plus size={14} /> Add publication
         </button>
       </div>
+
+      {!loading && list.length > 0 && (
+        <div className="flex items-center justify-between gap-4 flex-wrap mb-4">
+          <label className="relative flex-1 min-w-[260px] max-w-md">
+            <span className="sr-only">Search publications</span>
+            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#7A857E] pointer-events-none" />
+            <input
+              type="search"
+              className="field !pl-9 !pr-9"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Escape") setQuery(""); }}
+              placeholder="Search title, author, venue or year…"
+              data-testid="admin-pub-search"
+            />
+            {filtering && (
+              <button
+                type="button"
+                onClick={() => setQuery("")}
+                aria-label="Clear search"
+                className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-[#7A857E] hover:text-[#B95438]"
+                data-testid="admin-pub-search-clear"
+              >
+                <X size={14} />
+              </button>
+            )}
+          </label>
+          <div className="overline" data-testid="admin-pub-count">
+            {filtering
+              ? `${visible.length} of ${list.length} shown · reordering paused`
+              : `${list.length} publications`}
+          </div>
+        </div>
+      )}
 
       {loading ? (
         <div className="flex items-center gap-2 text-[#4A5A52] py-10"><Loader2 className="animate-spin" size={16} /> Loading…</div>
@@ -81,7 +146,14 @@ const swap = async (idx, dir) => {
               </tr>
             </thead>
             <tbody>
-              {list.map((p, i) => {
+              {visible.length === 0 && (
+                <tr>
+                  <td colSpan={5} className="px-4 py-10 text-center text-[#4A5A52]" data-testid="admin-pub-no-matches">
+                    Nothing matches “{query.trim()}”.
+                  </td>
+                </tr>
+              )}
+              {visible.map((p) => {
                 const isDoc = Boolean(p.file_path);
                 const href = isDoc ? fileUrl(p.file_path) : p.external_url;
                 return (
@@ -109,8 +181,18 @@ const swap = async (idx, dir) => {
                     </td>
                     <td>
                       <div className="inline-flex items-center gap-1">
-                        <button className="border hairline p-1 hover:bg-[#F2EFEA]" onClick={() => swap(i, -1)} aria-label="Move up" data-testid={`admin-pub-up-${p.id}`}><ArrowUp size={14} /></button>
-                        <button className="border hairline p-1 hover:bg-[#F2EFEA]" onClick={() => swap(i, 1)} aria-label="Move down" data-testid={`admin-pub-down-${p.id}`}><ArrowDown size={14} /></button>
+                        <button
+                          className="border hairline p-1 hover:bg-[#F2EFEA] disabled:opacity-30 disabled:hover:bg-transparent"
+                          onClick={() => swap(p, -1)} disabled={filtering}
+                          title={filtering ? "Clear the search to reorder" : "Move up"}
+                          aria-label="Move up" data-testid={`admin-pub-up-${p.id}`}
+                        ><ArrowUp size={14} /></button>
+                        <button
+                          className="border hairline p-1 hover:bg-[#F2EFEA] disabled:opacity-30 disabled:hover:bg-transparent"
+                          onClick={() => swap(p, 1)} disabled={filtering}
+                          title={filtering ? "Clear the search to reorder" : "Move down"}
+                          aria-label="Move down" data-testid={`admin-pub-down-${p.id}`}
+                        ><ArrowDown size={14} /></button>
                         <span className="font-mono text-[11px] text-[#7A857E] ml-2">{p.display_order}</span>
                       </div>
                     </td>

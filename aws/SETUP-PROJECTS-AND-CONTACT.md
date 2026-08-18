@@ -187,7 +187,8 @@ Written by the admin console (*Admin → Projects*), read by `/projects`:
 | `title` | Heading |
 | `summary` | The short note, in serif, directly under the title |
 | `description` | What's being done — line breaks preserved |
-| `image_path` | The picture (S3 URL from the presigned upload) |
+| `images` | The pictures, in order — the first is the cover. Several get arrows to page through |
+| `image_path` | Kept written to the first picture, for the admin table and older records |
 | `status` | Ongoing / Completed / Planned badge |
 | `year` | Next to the status |
 | `people` | "Who works on it" |
@@ -195,7 +196,54 @@ Written by the admin console (*Admin → Projects*), read by `/projects`:
 | `funding` | "Funded by" |
 | `sponsors` | "Sponsors & contributions" |
 | `external_url` | Optional "Project page" button |
+| `story` | The long-form story at `/projects/<id>` — see below |
 | `display_order` | Sort order — controlled by the ↑/↓ buttons in the admin table |
 
 Empty attribution fields are omitted from the page rather than rendered blank,
 so a project with only a funder shows only "Funded by".
+
+---
+
+## The project story
+
+Each project can carry a story that grows over time: the account of the work as
+it happens, written a piece at a time rather than all at once. Visitors reach it
+from **Read the full story** on the project card, at `/projects/<id>` — a real
+address, so a story can be linked to and shared on its own.
+
+**No Lambda change is needed for this.** `story` is an ordinary attribute on the
+project record, and `_create`/`_update` already store and merge whatever JSON the
+admin console sends. Projects written before stories existed simply have none,
+and show no story link.
+
+It is written under *Admin → Projects → Edit → The story*, as an ordered list of
+blocks. Each block is a map with an `id`, a `type`, and the fields for that type:
+
+| `type` | Fields | Shown as |
+|---|---|---|
+| `text` | `text` | A paragraph; blank lines are kept as paragraph breaks |
+| `heading` | `text`, `date` | A section heading, optionally dated — this is what makes a story read as a log |
+| `quote` | `text`, `attribution` | A pull quote |
+| `image` | `paths`, `caption` | One picture at its own proportions; several become one frame with arrows |
+| `video` | `path`, `caption` | An uploaded clip, played inline |
+| `embed` | `url`, `caption` | A YouTube or Vimeo link, normalised to its embed form |
+| `link` | `url`, `label`, `note` | A paper, dataset or partner page |
+| `gallery` | `ids` | Figures picked from the gallery — **not** re-uploaded |
+
+Two connections are drawn from data that is already there, so neither needs
+maintaining separately:
+
+- **People.** Every roster name appearing in `people` or `partners` is matched
+  against `/team` and shown as a portrait beside the story, linking to that
+  person's card. Spell names as they appear on the team page and they link
+  themselves.
+- **The gallery.** A `gallery` block references figures by their gallery `id`.
+
+There is **no public gallery page** at present — it was withdrawn at the lab's
+request. The collection, the admin tab and the `/gallery` endpoint are all
+unchanged: the gallery is now the pool that project stories draw figures from,
+and a figure reaches the site by being picked in a story. `frontend/src/pages/Gallery.jsx`
+is still in the tree, unrouted, with a note at the top on how to restore it.
+
+Blocks left empty are dropped when the project is saved rather than published
+blank.

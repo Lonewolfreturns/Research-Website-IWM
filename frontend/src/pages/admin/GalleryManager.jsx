@@ -52,6 +52,12 @@ export default function GalleryManager() {
         <div>
           <div className="overline">Admin · Gallery</div>
           <h2 className="font-serif text-3xl text-[#1C2722] mt-1">Gallery items</h2>
+          <p className="text-sm text-[#4A5A52] mt-2 max-w-2xl">
+            There is no public gallery page at the moment. These figures are the pool a
+            project story picks from — add them here, then choose them in
+            <strong> Projects → Edit → The story → From the gallery</strong>. Anything not
+            picked by a story simply isn&apos;t shown on the site.
+          </p>
         </div>
         <div className="inline-flex border hairline bg-[#F9F8F6]">
           <button

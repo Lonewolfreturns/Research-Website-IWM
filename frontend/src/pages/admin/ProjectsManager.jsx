@@ -3,7 +3,10 @@ import {
   Loader2, Plus, Pencil, Trash2, ArrowUp, ArrowDown, ImagePlus, X,
 } from "lucide-react";
 import { toast } from "sonner";
-import { api, fileUrl, uploadViaPresign } from "../../utils/api";
+import { api, fileUrl } from "../../utils/api";
+import StoryEditor from "./StoryEditor";
+import ImagePicker from "./ImagePicker";
+import { isBlockEmpty, projectImages, storyBlocks } from "../../lib/projectStory";
 
 const STATUSES = ["Ongoing", "Completed", "Planned"];
 
@@ -79,6 +82,7 @@ export default function ProjectsManager() {
                 <th className="w-[90px]">Picture</th>
                 <th>Project</th>
                 <th className="w-[120px]">Status</th>
+                <th className="w-[90px]">Story</th>
                 <th className="w-[120px]">Order</th>
                 <th className="w-[220px] text-right pr-4">Actions</th>
               </tr>
@@ -87,13 +91,20 @@ export default function ProjectsManager() {
               {list.map((p, i) => (
                 <tr key={p.id} className="border-b hairline [&>td]:px-4 [&>td]:py-3 align-middle" data-testid={`admin-project-row-${p.id}`}>
                   <td>
-                    {p.image_path ? (
-                      <img src={fileUrl(p.image_path)} alt="" className="w-16 h-12 object-cover border hairline" />
-                    ) : (
-                      <div className="w-16 h-12 border hairline bg-[#F2EFEA] flex items-center justify-center text-[#7A857E]">
-                        <ImagePlus size={14} />
-                      </div>
-                    )}
+                    <div className="relative w-16 h-12 border hairline bg-[#F2EFEA] overflow-hidden">
+                      {projectImages(p).length > 0 ? (
+                        <img src={fileUrl(projectImages(p)[0])} alt="" className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-[#7A857E]">
+                          <ImagePlus size={14} />
+                        </div>
+                      )}
+                      {projectImages(p).length > 1 && (
+                        <span className="absolute bottom-0 right-0 font-mono text-[9px] text-[#F9F8F6] bg-[#1C2722]/80 px-1">
+                          {projectImages(p).length}
+                        </span>
+                      )}
+                    </div>
                   </td>
                   <td>
                     <div className="font-serif text-base text-[#1C2722]">{p.title}</div>
@@ -102,6 +113,11 @@ export default function ProjectsManager() {
                   <td>
                     <span className="text-[11px] font-mono uppercase tracking-widest text-[#1C2722]">
                       {p.status || "—"}{p.year ? ` · ${p.year}` : ""}
+                    </span>
+                  </td>
+                  <td>
+                    <span className="text-[11px] font-mono uppercase tracking-widest text-[#7A857E]" data-testid={`admin-project-story-count-${p.id}`}>
+                      {storyBlocks(p).length || "—"}
                     </span>
                   </td>
                   <td>
@@ -152,17 +168,9 @@ function ProjectDialog({ initial, onClose, onSaved }) {
   const [funding, setFunding] = useState(initial?.funding || "");
   const [sponsors, setSponsors] = useState(initial?.sponsors || "");
   const [externalUrl, setExternalUrl] = useState(initial?.external_url || "");
-  const [file, setFile] = useState(null);
-  const [preview, setPreview] = useState(initial?.image_path ? fileUrl(initial.image_path) : "");
+  const [story, setStory] = useState(() => storyBlocks(initial));
+  const [images, setImages] = useState(() => projectImages(initial));
   const [saving, setSaving] = useState(false);
-
-  const onPickImage = (e) => {
-    const f = e.target.files?.[0];
-    if (!f) return;
-    if (!f.type.startsWith("image/")) { toast.error("Please choose an image file"); return; }
-    setFile(f);
-    setPreview(URL.createObjectURL(f));
-  };
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -181,12 +189,16 @@ function ProjectDialog({ initial, onClose, onSaved }) {
         funding: funding.trim(),
         sponsors: sponsors.trim(),
         external_url: externalUrl.trim(),
+        // Half-written blocks are dropped rather than published empty; the
+        // admin can always add them back next time.
+        story: story.filter((b) => !isBlockEmpty(b)),
       };
       payload.year = year === "" ? "" : Number(year);
 
-      let image_path = isEdit ? (initial.image_path || "") : "";
-      if (file) image_path = await uploadViaPresign(file, "projects");
-      payload.image_path = image_path;
+      payload.images = images;
+      // Kept in step with the first picture: the admin table thumbnail and any
+      // record written before projects had more than one still read image_path.
+      payload.image_path = images[0] || "";
 
       if (isEdit) {
         await api.put(`/admin/projects/${initial.id}`, payload);
@@ -207,7 +219,7 @@ function ProjectDialog({ initial, onClose, onSaved }) {
       onClick={onClose}
       data-testid="admin-project-dialog"
     >
-      <div className="bg-[#F9F8F6] border hairline w-full max-w-3xl max-h-[92vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+      <div className="bg-[#F9F8F6] border hairline w-full max-w-4xl max-h-[92vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between px-6 py-4 border-b hairline sticky top-0 bg-[#F9F8F6]">
           <div>
             <div className="overline">{isEdit ? "Edit" : "New"}</div>
@@ -250,24 +262,21 @@ function ProjectDialog({ initial, onClose, onSaved }) {
             <textarea rows={5} className="field" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="The work itself — methods, site, stage, what comes next…" data-testid="admin-project-description-input" />
           </label>
 
-          {/* Picture */}
+          {/* Pictures */}
           <div className="border hairline p-5">
-            <div className="overline mb-3">Picture</div>
-            <div className="flex items-center gap-4">
-              {preview ? (
-                <img src={preview} alt="" className="w-32 h-24 object-cover border hairline" data-testid="admin-project-image-preview" />
-              ) : (
-                <div className="w-32 h-24 border hairline bg-[#F2EFEA] flex items-center justify-center text-[#7A857E]">
-                  <ImagePlus size={18} />
-                </div>
-              )}
-              <label className="inline-flex items-center gap-2 cursor-pointer border hairline px-4 py-2 text-[12px] font-mono tracking-widest uppercase text-[#1C2722] hover:bg-[#E6E4DD] transition-colors">
-                <ImagePlus size={14} />
-                {preview ? "Replace picture" : "Choose picture"}
-                <input type="file" className="hidden" accept="image/*" onChange={onPickImage} data-testid="admin-project-image-input" />
-              </label>
-              {file && <span className="text-[11px] font-mono text-[#4A5A52]">{file.name} · {(file.size / (1024 * 1024)).toFixed(2)}MB</span>}
-            </div>
+            <div className="overline mb-2">Pictures</div>
+            <p className="text-[12px] text-[#4A5A52] mb-4 max-w-2xl leading-relaxed">
+              Add as many as you like. The first is the cover — it is what shows on the projects
+              list before anyone clicks. The rest are reached with arrows, in the order set here.
+            </p>
+            <ImagePicker
+              paths={images}
+              onChange={setImages}
+              folder="projects"
+              coverLabel="Cover"
+              addLabel={images.length ? "Add more pictures" : "Choose pictures"}
+              testIdPrefix="admin-project-images"
+            />
           </div>
 
           {/* Attribution */}
@@ -292,6 +301,8 @@ function ProjectDialog({ initial, onClose, onSaved }) {
               </label>
             </div>
           </div>
+
+          <StoryEditor blocks={story} onChange={setStory} />
 
           <label className="block">
             <span className="overline block mb-2">Project link (optional)</span>

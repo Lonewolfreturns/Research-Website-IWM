@@ -3,7 +3,6 @@ import { useLocation } from "react-router-dom";
 import { Loader2, AlertTriangle, ChevronDown } from "lucide-react";
 import { api } from "../utils/api";
 import TeamCard from "../components/TeamCard";
-import ContactSection from "../components/ContactSection";
 import usePageMeta from "../hooks/usePageMeta";
 import { groupTeam } from "../lib/teamGroups";
 
@@ -267,8 +266,6 @@ export default function TeamPage() {
           )}
         </div>
       </section>
-
-      <ContactSection testIdPrefix="team-contact" />
     </div>
   );
 }

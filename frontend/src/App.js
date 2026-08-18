@@ -15,7 +15,7 @@ import Home from "@/pages/Home";
 import Team from "@/pages/Team";
 import Publications from "@/pages/Publications";
 import Projects from "@/pages/Projects";
-import Gallery from "@/pages/Gallery";
+import ProjectStory from "@/pages/ProjectStory";
 import Contact from "@/pages/Contact";
 import AdminLogin from "@/pages/AdminLogin";
 import AdminDashboard from "@/pages/AdminDashboard";
@@ -60,7 +60,7 @@ function App() {
                 <Route path="/team" element={<Team />} />
                 <Route path="/publications" element={<Publications />} />
                 <Route path="/projects" element={<Projects />} />
-                <Route path="/gallery" element={<Gallery />} />
+                <Route path="/projects/:id" element={<ProjectStory />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="*" element={<NotFound />} />
               </Route>

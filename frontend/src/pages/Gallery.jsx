@@ -1,13 +1,27 @@
-import React, { useEffect, useState, useCallback } from "react";
-import { Loader2, AlertTriangle } from "lucide-react";
+/**
+ * The public gallery page — currently NOT routed.
+ *
+ * The gallery was taken off the website at the lab's request; the figures in it
+ * are still very much in use, as the pool project stories pick from, so nothing
+ * about the collection or the admin tab changed. Only this page, its navbar and
+ * footer links, and the home-page buttons pointing at it were withdrawn.
+ *
+ * To put it back: re-add the import and `<Route path="/gallery" …>` in App.js,
+ * the entry in Navbar's LINKS, and the footer list item. Everything below still
+ * works as it did, including the "From the project …" cross-links.
+ */
+import React, { useEffect, useState, useCallback, useMemo } from "react";
+import { Link } from "react-router-dom";
+import { Loader2, AlertTriangle, ArrowRight } from "lucide-react";
 import { api } from "../utils/api";
+import { storyGalleryIds } from "../lib/projectStory";
 import GalleryItemView from "../components/GalleryItem";
 import Lightbox from "../components/Lightbox";
-import ContactSection from "../components/ContactSection";
 import usePageMeta from "../hooks/usePageMeta";
 
 export default function GalleryPage() {
   const [items, setItems] = useState([]);
+  const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [lightboxIdx, setLightboxIdx] = useState(null);
@@ -20,8 +34,16 @@ export default function GalleryPage() {
     let cancelled = false;
     (async () => {
       try {
-        const { data } = await api.get("/gallery");
-        if (!cancelled) setItems(data || []);
+        // Projects are only here to tell a figure which story it belongs to, so
+        // a failure there must not take the gallery down with it.
+        const [gal, proj] = await Promise.all([
+          api.get("/gallery"),
+          api.get("/projects").catch(() => ({ data: [] })),
+        ]);
+        if (!cancelled) {
+          setItems(gal.data || []);
+          setProjects(proj.data || []);
+        }
       } catch (e) {
         if (!cancelled) setError(e?.response?.data?.detail || "Failed to load gallery.");
       } finally {
@@ -30,6 +52,21 @@ export default function GalleryPage() {
     })();
     return () => { cancelled = true; };
   }, []);
+
+  /**
+   * Which project story, if any, cites each figure. Built from the stories
+   * themselves rather than a field on the gallery item, so picking a figure in
+   * the story editor is the only place the connection has to be made.
+   */
+  const projectByItemId = useMemo(() => {
+    const map = {};
+    for (const p of projects) {
+      for (const gid of storyGalleryIds(p)) {
+        if (!map[gid]) map[gid] = p;
+      }
+    }
+    return map;
+  }, [projects]);
 
   const open = useCallback((i) => setLightboxIdx(i), []);
   const close = useCallback(() => setLightboxIdx(null), []);
@@ -73,13 +110,38 @@ export default function GalleryPage() {
             </div>
           )}
           {!loading && !error && items.length > 0 && (
-           <div className="columns-1 sm:columns-2 lg:columns-3 gap-5" data-testid="gallery-masonry">
-  {items.map((it, i) => (
-    <div key={it.id} className="break-inside-avoid mb-5 fade-up" style={{ animationDelay: `${Math.min(i, 10) * 50}ms` }}>
-      <GalleryItemView item={it} onOpen={() => open(i)} />
-    </div>
-  ))}
-</div>
+            <div className="columns-1 sm:columns-2 lg:columns-3 gap-5" data-testid="gallery-masonry">
+              {items.map((it, i) => {
+                const project = projectByItemId[String(it.id)];
+                return (
+                  <div
+                    key={it.id}
+                    className="break-inside-avoid mb-5 fade-up"
+                    style={{ animationDelay: `${Math.min(i, 10) * 50}ms` }}
+                  >
+                    <GalleryItemView item={it} onOpen={() => open(i)} />
+                    {/* Outside the figure on purpose — the figure is itself a
+                        button into the lightbox, and a link nested inside one is
+                        ambiguous to both the keyboard and a screen reader. */}
+                    {project && (
+                      <Link
+                        to={`/projects/${project.id}`}
+                        className="group flex items-center justify-between gap-3 border border-t-0 hairline px-4 py-2.5 bg-[#F9F8F6] hover:bg-[#F2EFEA] transition-colors"
+                        data-testid={`gallery-project-link-${it.id}`}
+                      >
+                        <span className="min-w-0">
+                          <span className="overline block">From the project</span>
+                          <span className="block text-[13px] text-[#1C2722] truncate group-hover:text-[#B95438] transition-colors">
+                            {project.title}
+                          </span>
+                        </span>
+                        <ArrowRight size={13} className="shrink-0 text-[#7A857E] group-hover:text-[#B95438] transition-colors" />
+                      </Link>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           )}
         </div>
       </section>
@@ -87,7 +149,6 @@ export default function GalleryPage() {
       {lightboxIdx != null && (
   <Lightbox items={items} index={lightboxIdx} onClose={close} onPrev={prev} onNext={next} />
 )}
-      <ContactSection testIdPrefix="gallery-contact" />
     </div>
   );
 }

@@ -3,7 +3,6 @@ import { useSearchParams } from "react-router-dom";
 import { Loader2, AlertTriangle } from "lucide-react";
 import { api } from "../utils/api";
 import ProjectCard from "../components/ProjectCard";
-import ContactSection from "../components/ContactSection";
 import usePageMeta from "../hooks/usePageMeta";
 import Pagination from "../components/Pagination";
 
@@ -125,8 +124,6 @@ export default function ProjectsPage() {
           )}
         </div>
       </section>
-
-      <ContactSection testIdPrefix="projects-contact" />
     </div>
   );
 }

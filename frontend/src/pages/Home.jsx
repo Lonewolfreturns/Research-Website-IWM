@@ -1,7 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Recycle, FlaskConical, Factory, Leaf, Sparkles, BookOpen, MapPin } from "lucide-react";
-import ContactSection from "../components/ContactSection";
 import { useSettings } from "../context/SettingsContext";
 import usePageMeta from "../hooks/usePageMeta";
 
@@ -53,7 +52,7 @@ const HIGHLIGHTS = [
 export default function Home() {
   const { settings: s } = useSettings();
   usePageMeta(
-    "Overview",
+    "Introduction",
     "The Innovative Waste Management lab studies the science, systems and policy of turning the world's discards into a continuous supply of materials, energy and new livelihoods."
   );
   const locationLabel = [s.city, s.region, s.country].filter(Boolean).join(" · ");
@@ -83,11 +82,11 @@ export default function Home() {
                 energy and new livelihoods.
               </p>
               <div className="mt-10 flex flex-wrap gap-4 fade-up d-3">
-                <Link to="/gallery" className="btn-ink" data-testid="hero-cta-research">
+                <Link to="/projects" className="btn-ink" data-testid="hero-cta-research">
                   See our field work <ArrowRight size={14} />
                 </Link>
                 <Link to="/team" className="btn-outline" data-testid="hero-cta-team">
-                  Meet the researchers
+                  Meet the team
                 </Link>
               </div>
             </div>
@@ -199,8 +198,8 @@ export default function Home() {
                 Four innovations currently shaping the field.
               </h2>
             </div>
-            <Link to="/gallery" className="btn-outline" data-testid="innovations-cta-gallery">
-              Browse the archive <ArrowRight size={14} />
+            <Link to="/publications" className="btn-outline" data-testid="innovations-cta-publications">
+              Read the papers <ArrowRight size={14} />
             </Link>
           </div>
 
@@ -283,22 +282,8 @@ export default function Home() {
               </article>
             ))}
           </div>
-
-          <div className="mt-14 border hairline p-8 md:p-12 bg-[#F2EFEA] flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-            <div>
-              <div className="overline mb-2">Invitation</div>
-              <h3 className="font-serif text-3xl text-[#1C2722] leading-tight max-w-xl">
-                Building something at the edge of waste, materials, or policy? We&apos;d love to hear about it.
-              </h3>
-            </div>
-            <Link to="/contact" className="btn-terracotta" data-testid="highlights-cta-contact">
-              Start a conversation <ArrowRight size={14} />
-            </Link>
-          </div>
         </div>
       </section>
-
-      <ContactSection testIdPrefix="home-contact" />
     </div>
   );
 }

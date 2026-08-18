@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Loader2, Plus, Pencil, Trash2, ArrowUp, ArrowDown, Image as ImgIcon, X } from "lucide-react";
+import React, { useEffect, useMemo, useState } from "react";
+import { Loader2, Plus, Pencil, Trash2, ArrowUp, ArrowDown, Image as ImgIcon, X, Search } from "lucide-react";
 import { api, fileUrl, uploadViaPresign } from "../../utils/api";
 import { tierForMember, ALL_TIERS } from "../../lib/teamGroups";
 import { toast } from "sonner";
@@ -11,6 +11,7 @@ const isAlumniRecord = (m) => m?.alumni === true || m?.alumni === 1 || m?.alumni
 export default function TeamManager() {
   const [list, setList] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [query, setQuery] = useState("");
   const [dialog, setDialog] = useState(null); // { mode: "create"|"edit", member? }
 
   const load = async () => {
@@ -38,20 +39,51 @@ export default function TeamManager() {
     }
   };
 
-const swap = async (idx, dir) => {
-  const j = idx + dir;
-  if (j < 0 || j >= list.length) return;
-  const next = [...list];
-  [next[idx], next[j]] = [next[j], next[idx]];
-  // Renumber everything so orders are always distinct and gapless.
-  const items = next.map((m, i) => ({ id: m.id, display_order: i + 1 }));
-  try {
-    await api.put("/admin/team/reorder", { items });
-    load();
-  } catch (e) {
-    toast.error(e?.response?.data?.detail || "Reorder failed");
-  }
-};
+  /**
+   * Reordering works on the full roster, found by id — never on the rendered
+   * row index. The renumber below rewrites the order of *everyone*, so handing
+   * it a filtered array would quietly renumber the visible few and destroy the
+   * position of everyone the search had hidden.
+   *
+   * The arrows are disabled while a search is active anyway: with neighbours
+   * filtered out, "move down" would swap someone past a row that isn't on
+   * screen, and the table would look like it had ignored the click.
+   */
+  const swap = async (member, dir) => {
+    const idx = list.findIndex((m) => m.id === member.id);
+    const j = idx + dir;
+    if (idx === -1 || j < 0 || j >= list.length) return;
+    const next = [...list];
+    [next[idx], next[j]] = [next[j], next[idx]];
+    // Renumber everything so orders are always distinct and gapless.
+    const items = next.map((m, i) => ({ id: m.id, display_order: i + 1 }));
+    try {
+      await api.put("/admin/team/reorder", { items });
+      load();
+    } catch (e) {
+      toast.error(e?.response?.data?.detail || "Reorder failed");
+    }
+  };
+
+  const filtering = query.trim().length > 0;
+
+  /**
+   * Matches name, role and group label, so "doctoral" pulls up the PhD students
+   * and "alumni" pulls up the alumni — the three things you actually scan this
+   * table for. Every term has to match somewhere, which makes "li masters"
+   * useful.
+   */
+  const visible = useMemo(() => {
+    const terms = query.toLowerCase().split(/\s+/).filter(Boolean);
+    if (terms.length === 0) return list;
+    return list.filter((m) => {
+      const haystack = [
+        m.name, m.role, tierForMember(m).label,
+        isAlumniRecord(m) ? "alumni" : "current",
+      ].join(" ").toLowerCase();
+      return terms.every((term) => haystack.includes(term));
+    });
+  }, [list, query]);
 
   return (
     <div data-testid="admin-team-manager">
@@ -72,6 +104,40 @@ const swap = async (idx, dir) => {
         </button>
       </div>
 
+      {!loading && list.length > 0 && (
+        <div className="flex items-center justify-between gap-4 flex-wrap mb-4">
+          <label className="relative flex-1 min-w-[260px] max-w-md">
+            <span className="sr-only">Search team members</span>
+            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#7A857E] pointer-events-none" />
+            <input
+              type="search"
+              className="field !pl-9 !pr-9"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Escape") setQuery(""); }}
+              placeholder="Search name, role or group…"
+              data-testid="admin-team-search"
+            />
+            {filtering && (
+              <button
+                type="button"
+                onClick={() => setQuery("")}
+                aria-label="Clear search"
+                className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-[#7A857E] hover:text-[#B95438]"
+                data-testid="admin-team-search-clear"
+              >
+                <X size={14} />
+              </button>
+            )}
+          </label>
+          <div className="overline" data-testid="admin-team-count">
+            {filtering
+              ? `${visible.length} of ${list.length} shown · reordering paused`
+              : `${list.length} members`}
+          </div>
+        </div>
+      )}
+
       {loading ? (
         <div className="flex items-center gap-2 text-[#4A5A52] py-10"><Loader2 className="animate-spin" size={16} /> Loading…</div>
       ) : list.length === 0 ? (
@@ -90,7 +156,14 @@ const swap = async (idx, dir) => {
               </tr>
             </thead>
             <tbody>
-              {list.map((m, i) => (
+              {visible.length === 0 && (
+                <tr>
+                  <td colSpan={6} className="px-4 py-10 text-center text-[#4A5A52]" data-testid="admin-team-no-matches">
+                    No one matches “{query.trim()}”.
+                  </td>
+                </tr>
+              )}
+              {visible.map((m) => (
                 <tr key={m.id} className="border-b hairline [&>td]:px-4 [&>td]:py-3 align-middle" data-testid={`admin-team-row-${m.id}`}>
                   <td>
                     <div className="w-14 h-14 border hairline bg-[#E6E4DD] overflow-hidden">
@@ -119,8 +192,18 @@ const swap = async (idx, dir) => {
                   </td>
                   <td>
                     <div className="inline-flex items-center gap-1">
-                      <button className="border hairline p-1 hover:bg-[#F2EFEA]" onClick={() => swap(i, -1)} aria-label="Move up" data-testid={`admin-team-up-${m.id}`}><ArrowUp size={14} /></button>
-                      <button className="border hairline p-1 hover:bg-[#F2EFEA]" onClick={() => swap(i, 1)} aria-label="Move down" data-testid={`admin-team-down-${m.id}`}><ArrowDown size={14} /></button>
+                      <button
+                        className="border hairline p-1 hover:bg-[#F2EFEA] disabled:opacity-30 disabled:hover:bg-transparent"
+                        onClick={() => swap(m, -1)} disabled={filtering}
+                        title={filtering ? "Clear the search to reorder" : "Move up"}
+                        aria-label="Move up" data-testid={`admin-team-up-${m.id}`}
+                      ><ArrowUp size={14} /></button>
+                      <button
+                        className="border hairline p-1 hover:bg-[#F2EFEA] disabled:opacity-30 disabled:hover:bg-transparent"
+                        onClick={() => swap(m, 1)} disabled={filtering}
+                        title={filtering ? "Clear the search to reorder" : "Move down"}
+                        aria-label="Move down" data-testid={`admin-team-down-${m.id}`}
+                      ><ArrowDown size={14} /></button>
                       <span className="font-mono text-[11px] text-[#7A857E] ml-2">{m.display_order}</span>
                     </div>
                   </td>
@@ -219,14 +302,20 @@ const onSubmit = async (e) => {
         <form onSubmit={onSubmit} className="p-6 grid grid-cols-1 md:grid-cols-[160px_1fr] gap-6">
           <div>
             <div className="overline mb-2">Photo</div>
-            <div className="w-40 h-48 border hairline bg-[#E6E4DD] overflow-hidden">
-              {preview ? <img src={preview} alt="Preview" className="w-full h-full object-cover" /> :
+            {/* Same 4:5 box and same focal point the public card uses, so what is
+                previewed here is exactly the crop visitors get. */}
+            <div className="w-40 aspect-[4/5] border hairline bg-[#E6E4DD] overflow-hidden">
+              {preview ? <img src={preview} alt="Preview" className="w-full h-full object-cover object-[center_25%]" /> :
                 <div className="w-full h-full flex items-center justify-center text-[#7A857E]"><ImgIcon size={24} /></div>}
             </div>
             <label className="btn-outline mt-3 !py-2 !px-3 cursor-pointer justify-center">
               {file || isEdit ? "Change photo" : "Upload photo"}
               <input type="file" accept="image/*" className="hidden" onChange={onFile} data-testid="admin-team-photo-input" />
             </label>
+            <p className="mt-3 text-[11px] leading-relaxed text-[#7A857E]">
+              Portrait, upright, roughly 4:5 (e.g. 1200×1500). Every photo is cropped to
+              this shape with the head near the top — check the preview before saving.
+            </p>
           </div>
           <div className="space-y-4">
             <label className="block">

@@ -21,22 +21,34 @@ export const TeamCard = ({ member, index = 0, badgeLabel = "Researcher" }) => {
       style={{ animationDelay: `${Math.min(index, 8) * 80}ms` }}
       data-testid={`team-card-${member.id}`}
     >
-      {/* Photo */}
-      <div className="relative aspect-[4/5] md:aspect-auto md:min-h-[420px] bg-[#E6E4DD] overflow-hidden">
-        {src && !broken ? (
-          <img
-            src={src}
-            alt={member.name}
-            onError={() => setBroken(true)}
-            className="absolute inset-0 w-full h-full object-cover grayscale-[18%] hover:grayscale-0 transition-all duration-700"
-          />
-        ) : (
-          <div className="absolute inset-0 flex items-center justify-center text-[#7A857E]">
-            <User size={48} strokeWidth={1} />
+      {/* Photo — every portrait is framed identically: same 4:5 box at every
+          breakpoint, cropped to fill it, biased towards the top of the frame so
+          heads sit in roughly the same place whether the source photo is a tight
+          headshot or a full-length field picture. Letting the box stretch to the
+          row height (md:aspect-auto) was what made the column look ragged: each
+          row is a different height, so each portrait got a different crop.
+
+          The outer cell still stretches to the row, and carries the stone tone,
+          so a card with a long bio shows a mat under the portrait rather than a
+          hole in the panel. */}
+      <div className="bg-[#E6E4DD]">
+        <div className="relative aspect-[4/5] w-full overflow-hidden">
+          {src && !broken ? (
+            <img
+              src={src}
+              alt={member.name}
+              onError={() => setBroken(true)}
+              loading="lazy"
+              className="absolute inset-0 w-full h-full object-cover object-[center_25%] grayscale-[18%] hover:grayscale-0 transition-all duration-700"
+            />
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center text-[#7A857E]">
+              <User size={48} strokeWidth={1} />
+            </div>
+          )}
+          <div className="absolute top-3 left-3 font-mono text-[10px] tracking-widest uppercase text-[#F9F8F6] bg-[#1C2722]/80 px-2 py-1">
+            {orderLabel} · {badgeLabel}
           </div>
-        )}
-        <div className="absolute top-3 left-3 font-mono text-[10px] tracking-widest uppercase text-[#F9F8F6] bg-[#1C2722]/80 px-2 py-1">
-          {orderLabel} · {badgeLabel}
         </div>
       </div>
 
@@ -51,8 +63,13 @@ export const TeamCard = ({ member, index = 0, badgeLabel = "Researcher" }) => {
         </h3>
 
         {member.bio && (
+          // Left-aligned (ragged right). Justifying this was tried and dropped:
+          // at this column width it needs hyphenation to avoid rivers of white
+          // space, and the broken words read worse than the ragged edge does.
+          // max-w-4xl rather than 2xl so the bio fills the column instead of
+          // stopping well short of it.
           <p
-            className="mt-5 text-[14.5px] leading-relaxed text-[#4A5A52] max-w-2xl"
+            className="mt-5 text-[14.5px] leading-relaxed text-[#4A5A52] max-w-4xl"
             data-testid={`team-bio-${member.id}`}
           >
             {member.bio}

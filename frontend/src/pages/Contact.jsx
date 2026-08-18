@@ -19,7 +19,7 @@ export default function ContactPage() {
           <div className="lg:col-span-8">
             <div className="overline mb-4">§ Correspondence · Contact</div>
             <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl leading-[0.98] text-[#1C2722] tracking-tight">
-              Write to the lab.
+              Contact the lab.
             </h1>
           </div>
           <div className="lg:col-span-4">

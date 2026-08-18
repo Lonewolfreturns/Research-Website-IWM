@@ -4,11 +4,10 @@ import { Menu, X } from "lucide-react";
 import { useSettings } from "../context/SettingsContext";
 
 const LINKS = [
-  { to: "/", label: "Overview" },
+  { to: "/", label: "Introduction" },
   { to: "/team", label: "Team" },
   { to: "/projects", label: "Projects" },
   { to: "/publications", label: "Publications" },
-  { to: "/gallery", label: "Gallery" },
   { to: "/contact", label: "Contact" },
 ];
 
@@ -74,7 +73,7 @@ export const Navbar = () => {
           </nav>
 
           <Link to="/contact" className="hidden md:inline-flex btn-outline shrink-0" data-testid="nav-cta-contact">
-            Engage the lab
+            Contact
           </Link>
 
           {/* Mobile toggle */}

@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Loader2, AlertTriangle, ExternalLink, FileText, ArrowUpRight } from "lucide-react";
 import { api, fileUrl } from "../utils/api";
-import ContactSection from "../components/ContactSection";
 import usePageMeta from "../hooks/usePageMeta";
 import Pagination from "../components/Pagination";
 
@@ -169,8 +168,6 @@ export default function PublicationsPage() {
           )}
         </div>
       </section>
-
-      <ContactSection testIdPrefix="publications-contact" />
     </div>
   );
 }
